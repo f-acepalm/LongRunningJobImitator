@@ -1,7 +1,4 @@
 ﻿namespace LongRunningJobImitator.Api.Models
 {
-    public class TextConverterRequest
-    {
-        public string Text { get; set; } = string.Empty;
-    }
+    public record TextConverterRequest(string Text);
 }

@@ -1,4 +1,5 @@
 using LongRunningJobImitator.Api.Models;
+using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LongRunningJobImitator.Api.Controllers
@@ -7,19 +8,35 @@ namespace LongRunningJobImitator.Api.Controllers
     [Route("[controller]")]
     public class TextConverter : ControllerBase
     {
+        private readonly ITextConverter _service;
         private readonly ILogger<TextConverter> _logger;
 
-        public TextConverter(ILogger<TextConverter> logger)
+        public TextConverter(
+            ITextConverter service,
+            ILogger<TextConverter> logger)
         {
+            _service = service;
             _logger = logger;
         }
 
         [HttpPost("start")]
-        public ActionResult<TextConverterResponse> StartProcessing([FromBody] TextConverterRequest request)
+        public async Task<ActionResult<TextConverterResponse>> StartProcessing([FromBody] TextConverterRequest request)
         {
             _logger.LogInformation($"Accepted text: {request.Text}");
+            
+            var result = await _service.RunConversionAsync(request.Text);
 
-            return new TextConverterResponse { Result = request.Text, JobId = 1 };
+            return new TextConverterResponse(result.JobId, request.Text);
+        }
+
+        [HttpPost("cancel")]
+        public async Task<ActionResult> CancelProcessing([FromBody] CancelConversionRequest request)
+        {
+            _logger.LogInformation($"Cancelling job with id {request.JobId}");
+
+            await _service.CancelConversionAsync(request.JobId);
+
+            return Ok();
         }
     }
 }
