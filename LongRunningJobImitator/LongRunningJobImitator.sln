@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongRunningJobImitator", "LongRunningJobImitator\LongRunningJobImitator.csproj", "{8BB4DD99-EEF8-49AE-9E51-475C44681D66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LongRunningJobImitator", "LongRunningJobImitator\LongRunningJobImitator.csproj", "{8BB4DD99-EEF8-49AE-9E51-475C44681D66}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{23596AFB-31CB-4E89-B200-08A66077E0F1}"
 EndProject
