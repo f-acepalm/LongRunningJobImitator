@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ApiClientService } from './api-client.service';
+import { TextConverterService } from './text-converter.service';
 
-describe('ApiClientService', () => {
-  let service: ApiClientService;
+describe('TextConverterService', () => {
+  let service: TextConverterService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ApiClientService);
+    service = TestBed.inject(TextConverterService);
   });
 
   it('should be created', () => {

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiClientService {
+export class TextConverterService {
   // config = {
   //   ApiUrl: configurl.apiServer.url,
   // };
