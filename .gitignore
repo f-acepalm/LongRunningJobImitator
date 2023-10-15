@@ -1,6 +1,6 @@
-LongRunningJobImitator/LongRunningJobImitator/bin/
-LongRunningJobImitator/LongRunningJobImitator/obj/
-LongRunningJobImitator/.vs/
-LongRunningJobImitator/obj/
-LongRunningJobImitator/bin/
 .vs/
+LongRunningJobImitator/LongRunningJobImitator.Api/bin/
+LongRunningJobImitator/LongRunningJobImitator.Api/obj/
+LongRunningJobImitator/obj/
+Services/obj/
+LongRunningJobImitator/bin/

@@ -1,5 +1,4 @@
-
-namespace LongRunningJobImitator
+namespace LongRunningJobImitator.Api
 {
     public class Program
     {

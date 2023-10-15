@@ -1,4 +1,4 @@
-﻿namespace LongRunningJobImitator.Models
+﻿namespace LongRunningJobImitator.Api.Models
 {
     public class TextConverterRequest
     {

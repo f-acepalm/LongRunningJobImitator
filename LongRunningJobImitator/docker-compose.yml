@@ -19,7 +19,7 @@ services:
         image: ${DOCKER_REGISTRY-}api
         build:
             context: .
-            dockerfile: LongRunningJobImitator/Dockerfile
+            dockerfile: LongRunningJobImitator.Api/Dockerfile
         ports: 
             - "5000:80"
             - "5001:443"

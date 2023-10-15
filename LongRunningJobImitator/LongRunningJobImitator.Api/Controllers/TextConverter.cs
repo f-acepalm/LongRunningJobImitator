@@ -1,7 +1,7 @@
-using LongRunningJobImitator.Models;
+using LongRunningJobImitator.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LongRunningJobImitator.Controllers
+namespace LongRunningJobImitator.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
