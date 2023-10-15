@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { TextConverterService } from './text-converter.service';
+import { BehaviorSubject } from 'rxjs';
+import { TextConverterRequest } from './models/text-converter.interface';
 
 @Component({
   selector: 'text-converter',
@@ -7,15 +9,18 @@ import { TextConverterService } from './text-converter.service';
   styleUrls: ['./text-converter.component.scss']
 })
 export class TextConverterComponent {
-  response: string | undefined;
+  inputText: string = '';
+  outputText$ = new BehaviorSubject('');
 
-  constructor(private service: TextConverterService){}
+  constructor(private readonly service: TextConverterService) {}
 
-  ngOnInit(): void {
-    this.response = 'test';
-    // this.apiClientService.getData().subscribe(data =>{
-    //   console.log(data)
-    //   this.response = data;
-    // });
+  submitText(): void {
+    const requset: TextConverterRequest = {
+      text: this.inputText
+    };
+
+    this.service.startProcessing(requset).subscribe(result => {
+      this.outputText$.next(result.result);
+    });
   }
 }

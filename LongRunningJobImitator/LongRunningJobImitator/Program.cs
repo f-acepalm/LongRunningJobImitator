@@ -13,6 +13,16 @@ namespace LongRunningJobImitator
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            // TODO: refactor
+            builder.Services.AddCors(x =>
+            {
+                x.AddPolicy("AllowOrigin", options =>
+                {
+                    options.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -24,10 +34,8 @@ namespace LongRunningJobImitator
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowOrigin");
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

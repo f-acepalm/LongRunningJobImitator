@@ -1,3 +1,28 @@
-<div>
-    SOME TEST
+<p>
+    <mat-toolbar color="primary">
+        <span>Text converter</span>
+    </mat-toolbar>
+</p>
+<div class="container">
+    <div class="content-wrapper">
+        <h1 class="header">Instructions</h1>
+        <mat-divider></mat-divider>
+        <mat-form-field class="input-field">
+            <mat-label>Enter your text here</mat-label>
+            <textarea matInput [(ngModel)]="inputText"></textarea>
+        </mat-form-field>
+
+        <mat-divider></mat-divider>
+
+        <div class="button-row">
+            <button mat-raised-button color="primary" (click)="submitText()">Submit</button>
+            <button mat-raised-button color="primary" (click)="submitText()">Cancel</button>
+        </div>
+        
+        <mat-divider></mat-divider>
+
+        <mat-form-field class="output-field">
+            <textarea matInput readonly placeholder="Result will be here...">{{outputText$ | async}}</textarea>
+        </mat-form-field>
+    </div>
 </div>
