@@ -1,5 +1,5 @@
+using LongRunningJobImitator.Api.Interfaces;
 using LongRunningJobImitator.Api.Models;
-using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LongRunningJobImitator.Api.Controllers

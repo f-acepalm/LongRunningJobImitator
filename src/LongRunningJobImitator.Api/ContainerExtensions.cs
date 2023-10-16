@@ -1,5 +1,5 @@
-﻿using LongRunningJobImitator.Services;
-using LongRunningJobImitator.Services.Interfaces;
+﻿using LongRunningJobImitator.Api.Interfaces;
+using LongRunningJobImitator.Api.Services;
 
 namespace LongRunningJobImitator.Api
 {
@@ -8,6 +8,7 @@ namespace LongRunningJobImitator.Api
         public static IServiceCollection AddLongRunningJobImitatorServices(this IServiceCollection services)
         {
             services.AddSingleton<ITextConverter, TextConverter>()
+                .AddSingleton<IConversionResultSender, SignalRResultSender>()
                 .AddSingleton<BackgroundPrintingService>()
                 .AddSingleton<ITextConversionBackgroundService>(
                     provider => provider.GetRequiredService<BackgroundPrintingService>())

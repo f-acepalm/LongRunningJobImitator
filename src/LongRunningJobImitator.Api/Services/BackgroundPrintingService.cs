@@ -1,12 +1,21 @@
-﻿using LongRunningJobImitator.Services.Interfaces;
-using Microsoft.Extensions.Hosting;
+﻿using LongRunningJobImitator.Api.Interfaces;
 using System.Collections.Concurrent;
 
-namespace LongRunningJobImitator.Services
+namespace LongRunningJobImitator.Api.Services
 {
     public class BackgroundPrintingService : BackgroundService, ITextConversionBackgroundService
     {
         private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
+        private readonly IConversionResultSender _resultSender;
+        private readonly ILogger<BackgroundPrintingService> _logger;
+
+        public BackgroundPrintingService(
+            IConversionResultSender resultSender,
+            ILogger<BackgroundPrintingService> logger)
+        {
+            _resultSender = resultSender;
+            _logger = logger;
+        }
 
         //TODO: Not void
         public void StartProcessing(Guid jobId, string text)
@@ -17,7 +26,7 @@ namespace LongRunningJobImitator.Services
                 //TODO: Check
                 Task.Run(async () => await ProcessText(jobId, text, tokenSource.Token));
             }
-        }       
+        }
 
         public void CancelProcessing(Guid jobId)
         {
@@ -39,17 +48,17 @@ namespace LongRunningJobImitator.Services
         {
             foreach (var currentSymbol in text)
             {
-                Console.WriteLine($"{jobId}: {currentSymbol}");
+                await _resultSender.SendAsync(jobId, currentSymbol.ToString());
                 await Task.Delay(1000);
 
                 if (cancellation.IsCancellationRequested)
                 {
-                    Console.WriteLine("Canceled!");
+                    await _resultSender.SendAsync(jobId, "Canceled!");
                     break;
                 }
             }
 
-            Console.WriteLine($"Done for: {jobId}");
+            _logger.LogInformation($"Done for: {jobId}");
             _tokens.Remove(jobId, out _);
         }
     }

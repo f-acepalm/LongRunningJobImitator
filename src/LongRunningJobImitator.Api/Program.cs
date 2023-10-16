@@ -1,3 +1,5 @@
+using LongRunningJobImitator.Api.SignalR;
+
 namespace LongRunningJobImitator.Api
 {
     public class Program
@@ -10,7 +12,8 @@ namespace LongRunningJobImitator.Api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer()
                 .AddSwaggerGen()
-                .AddLongRunningJobImitatorServices();
+                .AddLongRunningJobImitatorServices()
+                .AddSignalR();
 
             // TODO: refactor
             builder.Services.AddCors(x =>
@@ -36,6 +39,7 @@ namespace LongRunningJobImitator.Api
             app.UseCors("AllowOrigin");
             app.UseAuthorization();
             app.MapControllers();
+            app.MapHub<TextConversionHub>("/text-conversion-hub");
 
             app.Run();
         }

@@ -1,7 +1,7 @@
-﻿using LongRunningJobImitator.Services.Interfaces;
+﻿using LongRunningJobImitator.Api.Interfaces;
 using LongRunningJobImitator.Services.Models;
 
-namespace LongRunningJobImitator.Services
+namespace LongRunningJobImitator.Api.Services
 {
     public class TextConverter : ITextConverter
     {
