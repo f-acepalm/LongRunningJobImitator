@@ -17,7 +17,7 @@ namespace LongRunningJobImitator.Api
             {
                 x.AddPolicy("AllowOrigin", options =>
                 {
-                    options.WithOrigins("http://localhost:9000", "http://localhost:4200")
+                    options.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
