@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LongRunningJobImitator.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TextConverter : ControllerBase
     {
         private readonly ITextConverter _service;

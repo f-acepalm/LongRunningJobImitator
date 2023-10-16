@@ -1,16 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TextConverterRequest, textConverterResponse } from './models/text-converter.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TextConverterService {
-  // config = {
-  //   ApiUrl: configurl.apiServer.url,
-  // };
-  private basePath = "https://localhost:7207/TextConverter"
+  private basePath = environment.apiUrl + "/TextConverter"
 
   constructor(private http: HttpClient) { }
   
