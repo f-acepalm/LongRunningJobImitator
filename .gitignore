@@ -1,8 +1,8 @@
 .vs/
-LongRunningJobImitator/LongRunningJobImitator.Api/bin/
-LongRunningJobImitator/LongRunningJobImitator.Api/obj/
-LongRunningJobImitator/obj/
-Services/obj/
-LongRunningJobImitator/bin/
-LongRunningJobImitator.Services/obj/
-LongRunningJobImitator.Services/bin/
+src/LongRunningJobImitator.Api/obj/
+src/LongRunningJobImitator.Services/obj/
+src/obj/Docker/obj/
+src/obj/
+src/bin/
+src/LongRunningJobImitator.Api/bin/
+src/LongRunningJobImitator.Services/bin/
