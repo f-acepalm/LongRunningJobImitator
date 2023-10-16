@@ -15,7 +15,7 @@ namespace LongRunningJobImitator.Api.Services
 
         public async Task SendAsync(Guid jobId, string result)
         {
-            await _hub.Clients.Group(jobId.ToString()).SendAsync(result);
+            await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionResult", result);
         }
     }
 }
