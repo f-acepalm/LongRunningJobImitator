@@ -30,6 +30,8 @@ namespace LongRunningJobImitator.Api.Services
 
         public void CancelProcessing(Guid jobId)
         {
+            _logger.LogInformation($"Cancelation was requested for job: {jobId}");
+
             if (_tokens.TryRemove(jobId, out var tokenSource))
             {
                 tokenSource.Cancel();
@@ -46,6 +48,8 @@ namespace LongRunningJobImitator.Api.Services
 
         private async Task ProcessText(Guid jobId, string text, CancellationToken cancellation)
         {
+            _logger.LogInformation($"Starting job: {jobId}");
+
             foreach (var currentSymbol in text)
             {
                 await RandomDelay();
@@ -53,14 +57,14 @@ namespace LongRunningJobImitator.Api.Services
 
                 if (cancellation.IsCancellationRequested)
                 {
-                    _logger.LogInformation($"Job {jobId} was canceled");
+                    _logger.LogInformation($"Job was canceled: {jobId}");
                     _tokens.Remove(jobId, out _);
 
                     return;
                 }
             }
 
-            _logger.LogInformation($"Done for: {jobId}");
+            _logger.LogInformation($"Job is done: {jobId}");
             _tokens.Remove(jobId, out _);
             await _resultSender.SendDoneAsync(jobId);
         }

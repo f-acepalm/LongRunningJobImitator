@@ -19,11 +19,6 @@ namespace LongRunningJobImitator.Api.Services
         }
 
 
-        public async Task SendCanceledAsync(Guid jobId)
-        {
-            await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionCanceled");
-        }
-
         public async Task SendDoneAsync(Guid jobId)
         {
             await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionDone");
