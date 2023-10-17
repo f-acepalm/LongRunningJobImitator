@@ -8,11 +8,16 @@ namespace LongRunningJobImitator.Services
     {
         private readonly ITextConversionResultSender _resultSender;
         private readonly ILogger<Base64TextConverter> _logger;
+        private readonly ILongProcessImitator _longProcessImitator;
 
-        public Base64TextConverter(ITextConversionResultSender resultSender, ILogger<Base64TextConverter> logger)
+        public Base64TextConverter(
+            ITextConversionResultSender resultSender,
+            ILogger<Base64TextConverter> logger,
+            ILongProcessImitator longProcessImitator)
         {
             _resultSender = resultSender;
             _logger = logger;
+            _longProcessImitator = longProcessImitator;
         }
 
         public async Task ConvertAsync(Guid jobId, string text, CancellationToken cancellation)
@@ -24,7 +29,7 @@ namespace LongRunningJobImitator.Services
 
             foreach (var currentSymbol in convertedText)
             {
-                await RandomDelay();
+                await _longProcessImitator.DoSomething();
                 await _resultSender.SendResultAsync(jobId, currentSymbol.ToString());
 
                 if (cancellation.IsCancellationRequested)
@@ -71,13 +76,6 @@ namespace LongRunningJobImitator.Services
             {
                 throw new ArgumentException("Text can not be empty");
             }
-        }
-
-        private static async Task RandomDelay()
-        {
-            var random = new Random();
-            var delay = random.Next(1000, 1500);
-            await Task.Delay(delay);
         }
     }
 }

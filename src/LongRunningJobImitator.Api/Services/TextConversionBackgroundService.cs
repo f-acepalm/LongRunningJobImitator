@@ -50,6 +50,11 @@ namespace LongRunningJobImitator.Api.Services
             {
                 await Task.Delay(1000, stoppingToken);
             }
+
+            foreach (var token in _tokens.Values)
+            {
+                token.Cancel();
+            }
         }
 
         private async Task ProcessText(Guid jobId, string text, CancellationToken cancellation)

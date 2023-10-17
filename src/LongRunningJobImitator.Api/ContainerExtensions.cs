@@ -10,7 +10,8 @@ namespace LongRunningJobImitator.Api
         public static IServiceCollection AddLongRunningJobImitatorServices(this IServiceCollection services)
         {
             services.AddTransient<ITextConverter, Base64TextConverter>()
-                .AddTransient<ITextConversionResultSender, SignalRResultSender>();
+                .AddTransient<ITextConversionResultSender, SignalRResultSender>()
+                .AddTransient<ILongProcessImitator, LongProcessImitator>();
 
             return services;
         }
