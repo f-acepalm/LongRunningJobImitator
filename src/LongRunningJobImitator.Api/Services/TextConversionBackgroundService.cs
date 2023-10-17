@@ -18,25 +18,30 @@ namespace LongRunningJobImitator.Api.Services
             _logger = logger;
         }
 
-        //TODO: Not void
-        public void StartProcessing(Guid jobId, string text)
+        public async Task StartProcessingAsync(Guid jobId, string text)
         {
+            _logger.LogInformation($"Starting job: {jobId}");
+
             var tokenSource = new CancellationTokenSource();
             if (_tokens.TryAdd(jobId, tokenSource))
             {
                 //TODO: Check, exceptions
                 Task.Run(async () => await ProcessText(jobId, text, tokenSource.Token));
             }
+
+            await Task.CompletedTask;
         }
 
-        public void CancelProcessing(Guid jobId)
+        public async Task CancelProcessingAsync(Guid jobId)
         {
-            _logger.LogInformation($"Cancelation was requested for job: {jobId}");
+            _logger.LogInformation($"Job canceled: {jobId}");
 
             if (_tokens.TryRemove(jobId, out var tokenSource))
             {
                 tokenSource.Cancel();
             }
+
+            await Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,10 +54,11 @@ namespace LongRunningJobImitator.Api.Services
 
         private async Task ProcessText(Guid jobId, string text, CancellationToken cancellation)
         {
-            _logger.LogInformation($"Starting job: {jobId}");
             await _textConverter.ConvertAsync(jobId, text, cancellation);
-            _logger.LogInformation($"Job is done: {jobId}");
-            _tokens.Remove(jobId, out _);
+            if (_tokens.TryRemove(jobId, out _))
+            {
+                _logger.LogInformation($"Job is done: {jobId}");
+            }
         }
     }
 }

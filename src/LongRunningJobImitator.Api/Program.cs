@@ -1,5 +1,5 @@
 using LongRunningJobImitator.Api.SignalR;
-using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace LongRunningJobImitator.Api
 {
@@ -15,6 +15,7 @@ namespace LongRunningJobImitator.Api
                 .AddSwaggerGen()
                 .AddLongRunningJobImitatorServices()
                 .AddBackgroundServices()
+                .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
                 .AddSignalR();
 
             builder.Services.AddCors(x =>

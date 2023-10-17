@@ -2,8 +2,8 @@
 {
     public interface ITextConversionBackgroundService
     {
-        void StartProcessing(Guid jobId, string text);
+        Task StartProcessingAsync(Guid jobId, string text);
 
-        void CancelProcessing(Guid jobId);
+        Task CancelProcessingAsync(Guid jobId);
     }
 }

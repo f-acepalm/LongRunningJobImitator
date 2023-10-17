@@ -1,5 +1,6 @@
-using LongRunningJobImitator.Api.Interfaces;
+using LongRunningJobImitator.Api.Mediator.Requests;
 using LongRunningJobImitator.Api.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LongRunningJobImitator.Api.Controllers
@@ -8,37 +9,26 @@ namespace LongRunningJobImitator.Api.Controllers
     [Route("[controller]")]
     public class TextConverterController : ControllerBase
     {
-        private readonly IJobManager _service;
-        private readonly ILogger<TextConverterController> _logger;
+        private readonly IMediator _mediator;
 
-        public TextConverterController(
-            IJobManager service,
-            ILogger<TextConverterController> logger)
+        public TextConverterController(IMediator mediator)
         {
-            _service = service;
-            _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpPost("start")]
-        public async Task<ActionResult<TextConverterResponse>> StartProcessing([FromBody] TextConverterRequest request)
+        public async Task<ActionResult<TextConverterResponse>> StartProcessing([FromBody] TextConverterRequest request, CancellationToken cancellation)
         {
-            _logger.LogInformation($"Accepted text: {request.Text}");
-            
-            var jobId = await _service.RunTextConversionAsync(request.Text);
-
-            _logger.LogInformation($"Job {jobId} has started");
+            var jobId = Guid.NewGuid();
+            await _mediator.Send(new ConversionRequestedEvent(jobId, request.Text), cancellation);
 
             return new TextConverterResponse(jobId);
         }
 
         [HttpPost("cancel")]
-        public async Task<ActionResult> CancelProcessing([FromBody] CancelConversionRequest request)
+        public async Task<ActionResult> CancelProcessing([FromBody] CancelConversionRequest request, CancellationToken cancellation)
         {
-            _logger.LogInformation($"Cancelling job with id {request.JobId}");
-
-            await _service.CancelTextConversionAsync(request.JobId);
-
-            _logger.LogInformation($"Job with id {request.JobId} was cancelled");
+            await _mediator.Send(new ConversionCanceledEvent(request.JobId), cancellation);
 
             return Ok();
         }
