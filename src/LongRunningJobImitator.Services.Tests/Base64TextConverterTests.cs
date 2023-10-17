@@ -146,11 +146,6 @@ namespace LongRunningJobImitator.Services.Tests
             string text,
             Base64TextConverter sut)
         {
-            // Arrange
-            //resultSenderMock.Setup(x => x.SendResultAsync(It.IsAny<Guid>(), It.IsAny<string>()))
-            //    .Callback<Guid, string>((jobId, value) => result.Append(value))
-            //    .Returns(Task.CompletedTask);
-
             // Act
             await sut.ConvertAsync(jobId, text, default);
 
