@@ -6,6 +6,6 @@
 
         Task SendDoneAsync(Guid jobId);
 
-        Task SendCanceledAsync(Guid jobId);
+        Task SendCanceledAsync(Guid jobId); // TODO: remove
     }
 }

@@ -14,41 +14,18 @@ export class TextConverterComponent {
   outputText$ = new BehaviorSubject('');
   messagesSubscription$: Subscription | undefined; // TODO
   doneSubscription$: Subscription | undefined;
-  canceledSubscription$: Subscription | undefined;
   private currentJobId: string | undefined;
 
   constructor(
     private readonly service: TextConverterService,
     private readonly signalrService: SignalrService) {
-      this.signalrService.startConnection().then(() => {
-        console.log('Connected!'); // TODO: remove
-      }, (err) => {
-        console.log(err);
-      });
-
-      this.messagesSubscription$ = this.signalrService.receivedMessage$.subscribe((message: string) => {
-        console.log(message);
-        this.outputText$.next(this.outputText$.value + message);
-      });
-
-      this.doneSubscription$ = this.signalrService.done$.subscribe(() => {
-        console.log('Done!');
-        this.outputText$.next(this.outputText$.value + '\n' + 'Done!');
-        this.signalrService.leaveGroup(this.currentJobId!); // TODO: if?
-        this.currentJobId = undefined;
-      });
-
-      this.canceledSubscription$ = this.signalrService.canceled$.subscribe(() => {
-        console.log('Canceled!');
-        this.outputText$.next('Canceled!');
-        this.signalrService.leaveGroup(this.currentJobId!);
-        this.currentJobId = undefined;
-      });
-    }
+      this.connectToSignalr();
+      this.initializeSubscriptions();
+    } 
 
   submitText(): void {
+    this.cancelConversion();
     this.outputText$.next('');
-    // TODO: cancelConversion
     const requset: StartTextConversionRequest = {
       text: this.inputText
     };
@@ -57,10 +34,6 @@ export class TextConverterComponent {
     this.service.startProcessing(requset).subscribe(result => {
       this.signalrService.joinGroup(result.jobId).then(() => {
         this.currentJobId = result.jobId;
-        // this.messagesSubscription$ = this.signalrService.receivedMessage$.subscribe((message: string) => {
-        //   console.log(message);
-        //   this.outputText$.next(this.outputText$.value + message);
-        // });
       }, (err) => {
         console.log(err);
       })
@@ -69,23 +42,49 @@ export class TextConverterComponent {
 
   cancelConversion(): void {
     if(this.currentJobId) {
+      this.outputText$.next('Canceled!');
+      this.signalrService.leaveGroup(this.currentJobId);
       const requset: CancelTextConversionRequest = {
         jobId: this.currentJobId
       };
+
+      this.currentJobId = undefined;
   
       this.service.cancelProcessing(requset).subscribe({
-        next: () => console.log('Canceled'),
+        next: () => { 
+          console.log('Canceled');
+        },
         error: (error) => console.error(error)
       });
-  
-      // this.signalrService.leaveGroup(this.currentJobId);
-      // this.currentJobId = undefined;
     }
   }
 
   ngOnDestroy(): void {
     this.messagesSubscription$?.unsubscribe();
     this.doneSubscription$?.unsubscribe();
-    this.canceledSubscription$?.unsubscribe();
+  }
+
+  private initializeSubscriptions() {
+    this.messagesSubscription$ = this.signalrService.receivedMessage$.subscribe((message: string) => {
+      console.log(message);
+      this.outputText$.next(this.outputText$.value + message);
+    });
+
+    this.doneSubscription$ = this.signalrService.done$.subscribe(() => {
+      console.log('Done!');
+      this.outputText$.next(this.outputText$.value + '\n' + 'Done!');
+      if (this.currentJobId) {
+        this.signalrService.leaveGroup(this.currentJobId);
+      }
+      this.currentJobId = undefined;
+    });
+  }
+
+  private connectToSignalr() {
+    this.signalrService.startConnection().then(() => {
+      console.log('Connected!'); // TODO: remove
+    }, (err) => {
+      console.log(err);
+    });
   }
 }

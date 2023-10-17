@@ -10,10 +10,8 @@ export class SignalrService {
   private hubPath = environment.apiUrl + "/text-conversion-hub"
   private hubConnection: HubConnection | undefined;
   private messageSubject$ = new Subject<string>();
-  private canceledSubject$ = new Subject<void>();
   private doneSubject$ = new Subject<void>();
   receivedMessage$ = this.messageSubject$.asObservable();
-  canceled$ = this.canceledSubject$.asObservable();
   done$ = this.doneSubject$.asObservable();
 
   public joinGroup(groupName: string) {
@@ -77,11 +75,6 @@ export class SignalrService {
     if (this.hubConnection) {
       (this.hubConnection).on("ConversionResult", (data: string) => {
         this.messageSubject$.next(data);
-      });
-
-      (this.hubConnection).on("ConversionCanceled", () => {
-        console.log('Canceled');
-        this.canceledSubject$.next();
       });
 
       (this.hubConnection).on("ConversionDone", () => {

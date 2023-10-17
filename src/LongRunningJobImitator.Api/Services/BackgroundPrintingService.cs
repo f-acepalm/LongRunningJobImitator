@@ -53,8 +53,10 @@ namespace LongRunningJobImitator.Api.Services
 
                 if (cancellation.IsCancellationRequested)
                 {
-                    await _resultSender.SendCanceledAsync(jobId);
-                    break;
+                    _logger.LogInformation($"Job {jobId} was canceled");
+                    _tokens.Remove(jobId, out _);
+
+                    return;
                 }
             }
 
