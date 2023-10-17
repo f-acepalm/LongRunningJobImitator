@@ -14,12 +14,12 @@ namespace LongRunningJobImitator.Api
             builder.Services.AddEndpointsApiExplorer()
                 .AddSwaggerGen()
                 .AddLongRunningJobImitatorServices()
+                .AddBackgroundServices()
                 .AddSignalR();
 
-            // TODO: refactor
             builder.Services.AddCors(x =>
             {
-                x.AddPolicy("AllowOrigin", options =>
+                x.AddPolicy("CorsPolicy", options =>
                 {
                     options.WithOrigins(GetCorsAllowedOrigins(builder.Configuration))
                     .AllowAnyHeader()
@@ -38,7 +38,7 @@ namespace LongRunningJobImitator.Api
             }
 
             app.UseHttpsRedirection();
-            app.UseCors("AllowOrigin");
+            app.UseCors("CorsPolicy");
             app.UseAuthorization();
             app.MapControllers();
             app.MapHub<TextConversionHub>("/text-conversion-hub");

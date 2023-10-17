@@ -11,12 +11,18 @@ namespace LongRunningJobImitator.Api
         {
             services.AddTransient<IJobManager, TextConverterJobManager>()
                 .AddTransient<ITextConverter, Base64TextConverter>()
-                .AddTransient<ITextConversionResultSender, SignalRResultSender>()
-                .AddSingleton<BackgroundPrintingService>()
+                .AddTransient<ITextConversionResultSender, SignalRResultSender>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+        {
+            services.AddSingleton<TextConversionBackgroundService>()
                 .AddSingleton<ITextConversionBackgroundService>(
-                    provider => provider.GetRequiredService<BackgroundPrintingService>())
+                    provider => provider.GetRequiredService<TextConversionBackgroundService>())
                 .AddHostedService(
-                    provider => provider.GetRequiredService<BackgroundPrintingService>());
+                    provider => provider.GetRequiredService<TextConversionBackgroundService>());
 
             return services;
         }

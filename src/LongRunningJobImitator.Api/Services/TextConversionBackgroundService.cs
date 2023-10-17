@@ -3,15 +3,15 @@ using System.Collections.Concurrent;
 
 namespace LongRunningJobImitator.Api.Services
 {
-    public class BackgroundPrintingService : BackgroundService, ITextConversionBackgroundService
+    public class TextConversionBackgroundService : BackgroundService, ITextConversionBackgroundService
     {
         private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
         private readonly ITextConversionResultSender _resultSender;
-        private readonly ILogger<BackgroundPrintingService> _logger;
+        private readonly ILogger<TextConversionBackgroundService> _logger;
 
-        public BackgroundPrintingService(
+        public TextConversionBackgroundService(
             ITextConversionResultSender resultSender,
-            ILogger<BackgroundPrintingService> logger)
+            ILogger<TextConversionBackgroundService> logger)
         {
             _resultSender = resultSender;
             _logger = logger;
