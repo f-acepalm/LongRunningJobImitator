@@ -1,4 +1,5 @@
 using LongRunningJobImitator.Api.SignalR;
+using Microsoft.Extensions.Configuration;
 
 namespace LongRunningJobImitator.Api
 {
@@ -20,7 +21,7 @@ namespace LongRunningJobImitator.Api
             {
                 x.AddPolicy("AllowOrigin", options =>
                 {
-                    options.WithOrigins("http://localhost:4200")
+                    options.WithOrigins(GetCorsAllowedOrigins(builder.Configuration))
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -44,5 +45,10 @@ namespace LongRunningJobImitator.Api
 
             app.Run();
         }
+
+        private static string[] GetCorsAllowedOrigins(IConfiguration configuration)
+            => (configuration.GetSection("CorsAllowedOrigins").Get<IEnumerable<string>>() ?? Enumerable.Empty<string>())
+            .Distinct()
+            .ToArray();
     }
 }

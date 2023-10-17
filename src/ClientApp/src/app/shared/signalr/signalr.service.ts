@@ -20,7 +20,7 @@ export class SignalrService {
         this.hubConnection
           .invoke("AddToGroupAsync", groupName)
           .then(() => {
-            console.log("added to group");
+            console.log("Client was added to the group: " + groupName);
             return resolve(true);
           }, (err: any) => {
             console.log(err);
@@ -38,7 +38,7 @@ export class SignalrService {
         this.hubConnection
           .invoke("RemoveFromGroupAsync", groupName)
           .then(() => {
-            console.log("Removed from the group");
+            console.log("Client was removed from the group: " + groupName);
             return resolve(true);
           }, (err: any) => {
             console.log(err);
@@ -59,13 +59,13 @@ export class SignalrService {
 
       this.hubConnection.start()
         .then(() => {
-          console.log("connection established");
+          console.log("Connection established");
           this.listen();
 
           return resolve(true);
         })
         .catch((err: any) => {
-          console.log("error occured" + err);
+          console.log(err);
           reject(err);
         });
     });
@@ -78,7 +78,6 @@ export class SignalrService {
       });
 
       (this.hubConnection).on("ConversionDone", () => {
-        console.log('Done');
         this.doneSubject$.next();
       });
     }

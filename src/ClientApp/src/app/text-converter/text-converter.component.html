@@ -5,21 +5,22 @@
 </p>
 <div class="container">
     <div class="content-wrapper">
-        <h1 class="header">Instructions</h1>
-        <mat-divider></mat-divider>
+        <h1 class="header">To convert your text to Base64 format, enter you text to the text area and click 'Convert'</h1>
         <mat-form-field class="input-field">
             <mat-label>Enter your text here</mat-label>
             <textarea matInput [(ngModel)]="inputText"></textarea>
         </mat-form-field>
 
-        <mat-divider></mat-divider>
-
         <div class="button-row">
-            <button mat-raised-button color="primary" (click)="submitText()">Submit</button>
-            <button mat-raised-button color="primary" (click)="cancelConversion()">Cancel</button>
+            <button mat-raised-button color="primary" (click)="convertText()" [disabled]="isLoading || !inputText">
+                Convert
+            </button>
+            <button mat-raised-button color="primary" (click)="cancelConversion()" [disabled]="!isLoading">
+                Cancel
+            </button>
         </div>
         
-        <mat-divider></mat-divider>
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 
         <mat-form-field class="output-field">
             <textarea matInput readonly placeholder="Result will be here...">{{outputText$ | async}}</textarea>

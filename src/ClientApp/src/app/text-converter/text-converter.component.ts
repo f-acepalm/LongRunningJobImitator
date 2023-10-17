@@ -12,7 +12,8 @@ import { SignalrService } from '../shared/signalr/signalr.service';
 export class TextConverterComponent {
   inputText: string = '';
   outputText$ = new BehaviorSubject('');
-  messagesSubscription$: Subscription | undefined; // TODO
+  isLoading = false;
+  messagesSubscription$: Subscription | undefined;
   doneSubscription$: Subscription | undefined;
   private currentJobId: string | undefined;
 
@@ -23,9 +24,10 @@ export class TextConverterComponent {
       this.initializeSubscriptions();
     } 
 
-  submitText(): void {
+  convertText(): void {
     this.cancelConversion();
     this.outputText$.next('');
+    this.isLoading = true;
     const requset: StartTextConversionRequest = {
       text: this.inputText
     };
@@ -43,6 +45,7 @@ export class TextConverterComponent {
   cancelConversion(): void {
     if(this.currentJobId) {
       this.outputText$.next('Canceled!');
+      this.isLoading = false;
       this.signalrService.leaveGroup(this.currentJobId);
       const requset: CancelTextConversionRequest = {
         jobId: this.currentJobId
@@ -60,6 +63,7 @@ export class TextConverterComponent {
   }
 
   ngOnDestroy(): void {
+    this.cancelConversion();
     this.messagesSubscription$?.unsubscribe();
     this.doneSubscription$?.unsubscribe();
   }
@@ -73,6 +77,8 @@ export class TextConverterComponent {
     this.doneSubscription$ = this.signalrService.done$.subscribe(() => {
       console.log('Done!');
       this.outputText$.next(this.outputText$.value + '\n' + 'Done!');
+      this.isLoading = false;
+
       if (this.currentJobId) {
         this.signalrService.leaveGroup(this.currentJobId);
       }

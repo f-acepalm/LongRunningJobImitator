@@ -8,8 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { CommonModule } from '@angular/common';
     MatDividerModule,
     MatToolbarModule,
     MatIconModule,
-    CommonModule
+    CommonModule,
+    MatProgressBarModule
   ],
   declarations: [
     TextConverterComponent
