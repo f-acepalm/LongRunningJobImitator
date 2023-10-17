@@ -10,16 +10,11 @@ export class SignalrService {
   private hubPath = environment.apiUrl + "/text-conversion-hub"
   private hubConnection: HubConnection | undefined;
   private messageSubject$ = new Subject<string>();
+  private canceledSubject$ = new Subject<void>();
+  private doneSubject$ = new Subject<void>();
   receivedMessage$ = this.messageSubject$.asObservable();
-
-  public listen() {
-    if (this.hubConnection) {
-      (this.hubConnection).on("ConversionResult", (data: string) => {
-        console.log(data);
-        this.messageSubject$.next(data);
-      });
-    }
-  }
+  canceled$ = this.canceledSubject$.asObservable();
+  done$ = this.doneSubject$.asObservable();
 
   public joinGroup(groupName: string) {
     return new Promise((resolve, reject) => {
@@ -39,15 +34,36 @@ export class SignalrService {
     })
   }
 
+  public leaveGroup(groupName: string) {
+    return new Promise((resolve, reject) => {
+      if (this.hubConnection) {
+        this.hubConnection
+          .invoke("RemoveFromGroupAsync", groupName)
+          .then(() => {
+            console.log("Removed from the group");
+            return resolve(true);
+          }, (err: any) => {
+            console.log(err);
+            return reject(err);
+          });
+      } else {
+        return reject();
+      }
+    })
+  }
+
   public startConnection() {
     return new Promise((resolve, reject) => {
       this.hubConnection = new HubConnectionBuilder()
         .withUrl(this.hubPath)
+        .withAutomaticReconnect()
         .build();
 
       this.hubConnection.start()
         .then(() => {
           console.log("connection established");
+          this.listen();
+
           return resolve(true);
         })
         .catch((err: any) => {
@@ -57,5 +73,21 @@ export class SignalrService {
     });
   }
 
-  constructor() { }
+  private listen() {
+    if (this.hubConnection) {
+      (this.hubConnection).on("ConversionResult", (data: string) => {
+        this.messageSubject$.next(data);
+      });
+
+      (this.hubConnection).on("ConversionCanceled", () => {
+        console.log('Canceled');
+        this.canceledSubject$.next();
+      });
+
+      (this.hubConnection).on("ConversionDone", () => {
+        console.log('Done');
+        this.doneSubject$.next();
+      });
+    }
+  }
 }

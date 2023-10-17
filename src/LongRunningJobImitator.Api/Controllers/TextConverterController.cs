@@ -6,14 +6,14 @@ namespace LongRunningJobImitator.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TextConverter : ControllerBase
+    public class TextConverterController : ControllerBase
     {
-        private readonly ITextConverter _service;
-        private readonly ILogger<TextConverter> _logger;
+        private readonly IJobManager _service;
+        private readonly ILogger<TextConverterController> _logger;
 
-        public TextConverter(
-            ITextConverter service,
-            ILogger<TextConverter> logger)
+        public TextConverterController(
+            IJobManager service,
+            ILogger<TextConverterController> logger)
         {
             _service = service;
             _logger = logger;
@@ -24,9 +24,11 @@ namespace LongRunningJobImitator.Api.Controllers
         {
             _logger.LogInformation($"Accepted text: {request.Text}");
             
-            var result = await _service.RunConversionAsync(request.Text);
+            var jobId = await _service.RunTextConversionAsync(request.Text);
 
-            return new TextConverterResponse(result.JobId, request.Text);
+            _logger.LogInformation($"Job {jobId} has started");
+
+            return new TextConverterResponse(jobId);
         }
 
         [HttpPost("cancel")]
@@ -34,7 +36,9 @@ namespace LongRunningJobImitator.Api.Controllers
         {
             _logger.LogInformation($"Cancelling job with id {request.JobId}");
 
-            await _service.CancelConversionAsync(request.JobId);
+            await _service.CancelTextConversionAsync(request.JobId);
+
+            _logger.LogInformation($"Job with id {request.JobId} was cancelled");
 
             return Ok();
         }

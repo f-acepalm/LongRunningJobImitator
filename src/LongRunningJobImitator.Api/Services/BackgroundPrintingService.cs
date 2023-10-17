@@ -6,11 +6,11 @@ namespace LongRunningJobImitator.Api.Services
     public class BackgroundPrintingService : BackgroundService, ITextConversionBackgroundService
     {
         private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
-        private readonly IConversionResultSender _resultSender;
+        private readonly ITextConversionResultSender _resultSender;
         private readonly ILogger<BackgroundPrintingService> _logger;
 
         public BackgroundPrintingService(
-            IConversionResultSender resultSender,
+            ITextConversionResultSender resultSender,
             ILogger<BackgroundPrintingService> logger)
         {
             _resultSender = resultSender;
@@ -23,7 +23,7 @@ namespace LongRunningJobImitator.Api.Services
             var tokenSource = new CancellationTokenSource();
             if (_tokens.TryAdd(jobId, tokenSource))
             {
-                //TODO: Check
+                //TODO: Check, exceptions
                 Task.Run(async () => await ProcessText(jobId, text, tokenSource.Token));
             }
         }
@@ -48,18 +48,26 @@ namespace LongRunningJobImitator.Api.Services
         {
             foreach (var currentSymbol in text)
             {
-                await _resultSender.SendAsync(jobId, currentSymbol.ToString());
-                await Task.Delay(1000);
+                await RandomDelay();
+                await _resultSender.SendResultAsync(jobId, currentSymbol.ToString());
 
                 if (cancellation.IsCancellationRequested)
                 {
-                    await _resultSender.SendAsync(jobId, "Canceled!");
+                    await _resultSender.SendCanceledAsync(jobId);
                     break;
                 }
             }
 
             _logger.LogInformation($"Done for: {jobId}");
             _tokens.Remove(jobId, out _);
+            await _resultSender.SendDoneAsync(jobId);
+        }
+
+        private static async Task RandomDelay()
+        {
+            var random = new Random();
+            var delay = random.Next(1000, 1500);
+            await Task.Delay(delay);
         }
     }
 }

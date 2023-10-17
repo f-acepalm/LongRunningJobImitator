@@ -1,9 +1,12 @@
 
-export interface textConverterResponse {
-    readonly result: string;
+export interface TextConverterResponse {
     readonly jobId: string;
 }
 
-export interface TextConverterRequest {
+export interface StartTextConversionRequest {
     readonly text: string;
+}
+
+export interface CancelTextConversionRequest {
+    readonly jobId: string;
 }
