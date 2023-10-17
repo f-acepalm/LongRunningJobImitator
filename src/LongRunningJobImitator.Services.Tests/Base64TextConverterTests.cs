@@ -121,10 +121,10 @@ namespace LongRunningJobImitator.Services.Tests
         public async void ConvertAsync_SimpleText_AllResultsReported(
             [Frozen] Mock<ITextConversionResultSender> resultSenderMock,
             Guid jobId,
+            string text,
             Base64TextConverter sut)
         {
             // Arrange
-            var text = "Simple Text";
             var expected = sut.Base64Encode(text);
             var result = new StringBuilder();
             resultSenderMock.Setup(x => x.SendResultAsync(It.IsAny<Guid>(), It.IsAny<string>()))
@@ -136,6 +136,26 @@ namespace LongRunningJobImitator.Services.Tests
 
             // Assert
             result.ToString().Should().Be(expected);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async void ConvertAsync_SimpleText_DoneResultSent(
+            [Frozen] Mock<ITextConversionResultSender> resultSenderMock,
+            Guid jobId,
+            string text,
+            Base64TextConverter sut)
+        {
+            // Arrange
+            //resultSenderMock.Setup(x => x.SendResultAsync(It.IsAny<Guid>(), It.IsAny<string>()))
+            //    .Callback<Guid, string>((jobId, value) => result.Append(value))
+            //    .Returns(Task.CompletedTask);
+
+            // Act
+            await sut.ConvertAsync(jobId, text, default);
+
+            // Assert
+            resultSenderMock.Verify(x => x.SendDoneAsync(jobId), Times.Once());
         }
     }
 }
