@@ -1,56 +1,60 @@
 using FluentAssertions;
+using LongRunningJobImitator.Services.Tests.AutoFixtureConfiguration;
 
 namespace LongRunningJobImitator.Services.Tests
 {
     public class Base64TextConverterTests
     {
-        private Base64TextConverter _sut = new Base64TextConverter();
         
-        [Fact]
-        public void Convert_SimpleText_ExpectedResult()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_SimpleText_ExpectedResult(Base64TextConverter sut)
         {
             // Arrange
             var input = "Some simple text.";
             var expected = "U29tZSBzaW1wbGUgdGV4dC4=";
             
             // Act
-            var actual = _sut.Convert(input);
+            var actual = sut.Base64Encode(input);
 
             // Assert
             actual.Should().Be(expected);
         }
 
-        [Fact]
-        public void Convert_SpecialCharactersAndUnicode_ExpectedResult()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_SpecialCharactersAndUnicode_ExpectedResult(Base64TextConverter sut)
         {
             // Arrange
             var input = "!@#$%^&*())_+פûגא";
             var expected = "IUAjJCVeJiooKSlfK9GE0YvQstCw";
 
             // Act
-            var actual = _sut.Convert(input);
+            var actual = sut.Base64Encode(input);
 
             // Assert
             actual.Should().Be(expected);
         }
 
 
-        [Fact]
-        public void Convert_Decode_SameValue()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_Decode_SameValue(Base64TextConverter sut)
         {
             // Arrange
             var input = "!@#$%^&*())_+פûגא";
 
             // Act
-            var actual = _sut.Convert(input);
-            var decoded = _sut.Base64Decode(actual);
+            var actual = sut.Base64Encode(input);
+            var decoded = sut.Base64Decode(actual);
 
             // Assert
             decoded.Should().Be(input);
         }
 
-        [Fact]
-        public void Convert_MultilineText_ExpectedResult()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_MultilineText_ExpectedResult(Base64TextConverter sut)
         {
             // Arrange
             var input = """
@@ -61,44 +65,47 @@ namespace LongRunningJobImitator.Services.Tests
             var expected = "U29tZQ0KbXVsdGlsaW5lDQp0ZXh0";
 
             // Act
-            var actual = _sut.Convert(input);
+            var actual = sut.Base64Encode(input);
 
             // Assert
             actual.Should().Be(expected);
         }
 
-        [Fact]
-        public void Convert_LongText_ExpectedResult()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_LongText_ExpectedResult(Base64TextConverter sut)
         {
             // Arrange
             var input = "Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string Long string ";
             var expected = "TG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcg";
 
             // Act
-            var actual = _sut.Convert(input);
+            var actual = sut.Base64Encode(input);
 
             // Assert
             actual.Should().Be(expected);
         }
 
-        [Fact]
-        public void Convert_EmptyText_ArgumentException()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_EmptyText_ArgumentException(Base64TextConverter sut)
         {
             // Arrange
             var input = string.Empty;
 
             // Act
-            var action = () => _sut.Convert(input);
+            var action = () => sut.Base64Encode(input);
 
             // Assert
             action.Should().Throw<ArgumentException>();
         }
 
-        [Fact]
-        public void Convert_NullText_ArgumentException()
+        [Theory]
+        [AutoMoqData]
+        public void Base64Encode_NullText_ArgumentException(Base64TextConverter sut)
         {
             // Act
-            var action = () => _sut.Convert(null!);
+            var action = () => sut.Base64Encode(null!);
 
             // Assert
             action.Should().Throw<ArgumentException>();

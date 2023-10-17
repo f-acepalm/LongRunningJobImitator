@@ -1,4 +1,5 @@
 ﻿using LongRunningJobImitator.Api.Interfaces;
+using LongRunningJobImitator.Services.Interfaces;
 using System.Collections.Concurrent;
 
 namespace LongRunningJobImitator.Api.Services
@@ -6,14 +7,14 @@ namespace LongRunningJobImitator.Api.Services
     public class TextConversionBackgroundService : BackgroundService, ITextConversionBackgroundService
     {
         private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
-        private readonly ITextConversionResultSender _resultSender;
+        private readonly ITextConverter _textConverter;
         private readonly ILogger<TextConversionBackgroundService> _logger;
 
         public TextConversionBackgroundService(
-            ITextConversionResultSender resultSender,
+            ITextConverter textConverter,
             ILogger<TextConversionBackgroundService> logger)
         {
-            _resultSender = resultSender;
+            _textConverter = textConverter;
             _logger = logger;
         }
 
@@ -49,31 +50,9 @@ namespace LongRunningJobImitator.Api.Services
         private async Task ProcessText(Guid jobId, string text, CancellationToken cancellation)
         {
             _logger.LogInformation($"Starting job: {jobId}");
-
-            foreach (var currentSymbol in text)
-            {
-                await RandomDelay();
-                await _resultSender.SendResultAsync(jobId, currentSymbol.ToString());
-
-                if (cancellation.IsCancellationRequested)
-                {
-                    _logger.LogInformation($"Job was canceled: {jobId}");
-                    _tokens.Remove(jobId, out _);
-
-                    return;
-                }
-            }
-
+            await _textConverter.ConvertAsync(jobId, text, cancellation);
             _logger.LogInformation($"Job is done: {jobId}");
             _tokens.Remove(jobId, out _);
-            await _resultSender.SendDoneAsync(jobId);
-        }
-
-        private static async Task RandomDelay()
-        {
-            var random = new Random();
-            var delay = random.Next(1000, 1500);
-            await Task.Delay(delay);
         }
     }
 }

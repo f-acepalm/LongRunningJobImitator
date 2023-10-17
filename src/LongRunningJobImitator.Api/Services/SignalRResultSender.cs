@@ -1,5 +1,5 @@
-﻿using LongRunningJobImitator.Api.Interfaces;
-using LongRunningJobImitator.Api.SignalR;
+﻿using LongRunningJobImitator.Api.SignalR;
+using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace LongRunningJobImitator.Api.Services

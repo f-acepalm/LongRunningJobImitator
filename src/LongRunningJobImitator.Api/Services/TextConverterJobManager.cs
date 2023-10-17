@@ -1,24 +1,20 @@
 ﻿using LongRunningJobImitator.Api.Interfaces;
-using LongRunningJobImitator.Services.Interfaces;
 
 namespace LongRunningJobImitator.Api.Services
 {
-    public class TextConverterJobManager : IJobManager
+    public class TextConverterJobManager : IJobManager // TODO: Mediator
     {
         private readonly ITextConversionBackgroundService _backgroundService;
-        private readonly ITextConverter _textConverter;
 
-        public TextConverterJobManager(ITextConversionBackgroundService backgroundService, ITextConverter textConverter)
+        public TextConverterJobManager(ITextConversionBackgroundService backgroundService)
         {
             _backgroundService = backgroundService;
-            _textConverter = textConverter;
         }
 
         public async Task<Guid> RunTextConversionAsync(string text)
         {
             var jobId = Guid.NewGuid();
-            var convertedText = _textConverter.Convert(text);
-            _backgroundService.StartProcessing(jobId, convertedText);
+            _backgroundService.StartProcessing(jobId, text);
 
             return await Task.FromResult(jobId);
         }

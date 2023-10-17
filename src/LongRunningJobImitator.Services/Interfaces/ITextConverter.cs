@@ -2,6 +2,6 @@
 {
     public interface ITextConverter
     {
-        string Convert(string text);
+        Task ConvertAsync(Guid jobId, string text, CancellationToken cancellation);
     }
 }
