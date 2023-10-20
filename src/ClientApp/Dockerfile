@@ -1,4 +1,4 @@
-FROM node:alpine as build
+FROM node:18.12.1-alpine as build
 WORKDIR /app
 
 RUN npm install -g @angular/cli

@@ -15,4 +15,4 @@ services:
             dockerfile: LongRunningJobImitator.Api/Dockerfile
         ports:
             - "5000:80"
-            - "5001:433"
+            - "5001:443"
