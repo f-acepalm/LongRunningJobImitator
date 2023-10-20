@@ -1,13 +1,6 @@
 version: '3.4'
 
 services: 
-    proxy:
-        image: ${DOCKER_REGISTRY-}proxy
-        build:
-            context: ./Proxy
-            dockerfile: Dockerfile
-        ports: 
-            - "80:80"
     client:
         image: ${DOCKER_REGISTRY-}client
         build:
@@ -15,11 +8,11 @@ services:
             dockerfile: Dockerfile
         ports:
             - "9000:80"
-    api:
+    textconverterapi:
         image: ${DOCKER_REGISTRY-}api
         build:
             context: .
             dockerfile: LongRunningJobImitator.Api/Dockerfile
-        ports: 
+        ports:
             - "5000:80"
-            - "5001:443"
+            - "5001:433"
