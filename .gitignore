@@ -8,3 +8,5 @@ src/LongRunningJobImitator.Api/bin/
 src/LongRunningJobImitator.Services/bin/
 src/LongRunningJobImitator.Services.Tests/bin/
 src/LongRunningJobImitator.Services.Tests/obj/
+src/LongRunningJobImitator.Accessors/obj/
+src/LongRunningJobImitator.Accessors/bin/

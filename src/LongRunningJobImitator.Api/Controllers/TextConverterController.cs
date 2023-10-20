@@ -1,3 +1,5 @@
+using LongRunningJobImitator.Accessors.Interfaces;
+using LongRunningJobImitator.Accessors.Models;
 using LongRunningJobImitator.Api.Mediator.Requests;
 using LongRunningJobImitator.Api.Models;
 using MediatR;
@@ -10,10 +12,12 @@ namespace LongRunningJobImitator.Api.Controllers
     public class TextConverterController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IJobAccessor _jobAccessor;
 
-        public TextConverterController(IMediator mediator)
+        public TextConverterController(IMediator mediator, IJobAccessor jobAccessor)
         {
             _mediator = mediator;
+            _jobAccessor = jobAccessor;
         }
 
         [HttpPost("start")]
@@ -29,6 +33,16 @@ namespace LongRunningJobImitator.Api.Controllers
         public async Task<ActionResult> CancelProcessing([FromBody] CancelConversionRequest request, CancellationToken cancellation)
         {
             await _mediator.Send(new ConversionCanceledEvent(request.JobId), cancellation);
+
+            return Ok();
+        }
+
+        [HttpGet("test")]
+        public async Task<ActionResult> test(CancellationToken cancellation)
+        {
+            var id = Guid.NewGuid();
+            await _jobAccessor.CreateAsync(new JobDoc(id, JobStatus.InProgress, "Test", 1));
+            var x = await _jobAccessor.GetAsync(id);
 
             return Ok();
         }

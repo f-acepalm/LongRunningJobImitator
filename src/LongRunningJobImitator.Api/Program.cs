@@ -14,6 +14,7 @@ namespace LongRunningJobImitator.Api
             builder.Services.AddEndpointsApiExplorer()
                 .AddSwaggerGen()
                 .AddLongRunningJobImitatorServices()
+                .AddLongRunningJobImitatorAccessors(builder.Configuration)
                 .AddBackgroundServices()
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
                 .AddSignalR();
