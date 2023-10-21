@@ -1,6 +1,6 @@
 ﻿using LongRunningJobImitator.Services.Interfaces;
 
-namespace LongRunningJobImitator.Services;
+namespace LongRunningJobImitator.Services.Services;
 
 public class LongProcessImitator : ILongProcessImitator
 {

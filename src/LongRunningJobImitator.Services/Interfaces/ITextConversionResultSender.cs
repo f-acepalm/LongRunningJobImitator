@@ -2,8 +2,8 @@
 {
     public interface ITextConversionResultSender
     {
-        Task SendResultAsync(Guid jobId, string result);
+        Task SendResultAsync(Guid jobId, string result, CancellationToken cancellation);
 
-        Task SendDoneAsync(Guid jobId);
+        Task SendDoneAsync(Guid jobId, CancellationToken cancellation);
     }
 }

@@ -1,3 +1,2 @@
 ﻿namespace LongRunningJobImitator.Services.Models;
-
-public record CancelJobModel(Guid JobId);
+public record JobDoneModel(Guid JobId);

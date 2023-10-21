@@ -1,8 +1,6 @@
-using LongRunningJobImitator.Accessors;
-using LongRunningJobImitator.Api.SignalR;
 using LongRunningJobImitator.Services;
 
-namespace LongRunningJobImitator.Api;
+namespace LongRunningJobImitator.BackgroundServices;
 public class Program
 {
     public static void Main(string[] args)
@@ -13,20 +11,18 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer()
             .AddSwaggerGen()
-            .AddApiServices(builder.Configuration)
-            .AddLongRunningJobImitatorApiServices()
-            .AddSignalR();
-
-        builder.Services.AddCors(x =>
-        {
-            x.AddPolicy("CorsPolicy", options =>
+            .AddTextConversionBackgroundService()
+            .AddJobServices(builder.Configuration)
+            .AddCors(x =>
             {
-                options.WithOrigins(GetCorsAllowedOrigins(builder.Configuration))
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+                x.AddPolicy("CorsPolicy", options =>
+                {
+                    options.WithOrigins(GetCorsAllowedOrigins(builder.Configuration))
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
             });
-        });
 
         var app = builder.Build();
 
@@ -41,7 +37,6 @@ public class Program
         app.UseCors("CorsPolicy");
         app.UseAuthorization();
         app.MapControllers();
-        app.MapHub<TextConversionHub>("/text-conversion-hub");
 
         app.Run();
     }

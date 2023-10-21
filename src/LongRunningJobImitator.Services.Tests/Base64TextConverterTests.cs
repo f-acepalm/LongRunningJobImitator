@@ -2,6 +2,7 @@ using AutoFixture.Xunit2;
 using Castle.Core.Internal;
 using FluentAssertions;
 using LongRunningJobImitator.Services.Interfaces;
+using LongRunningJobImitator.Services.Services;
 using LongRunningJobImitator.Services.Tests.AutoFixtureConfiguration;
 using Moq;
 using System.Text;

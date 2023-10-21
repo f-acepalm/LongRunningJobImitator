@@ -10,3 +10,5 @@ src/LongRunningJobImitator.Services.Tests/bin/
 src/LongRunningJobImitator.Services.Tests/obj/
 src/LongRunningJobImitator.Accessors/obj/
 src/LongRunningJobImitator.Accessors/bin/
+src/LongRunningJobImitator.BackgroundServices/obj/
+src/LongRunningJobImitator.BackgroundServices/bin/

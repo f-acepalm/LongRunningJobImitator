@@ -12,6 +12,14 @@ services:
         depends_on:
             - mongo
 
+    backgroundservices:
+        image: ${DOCKER_REGISTRY-}backgroundservices
+        build:
+            context: ./LongRunningJobImitator.BackgroundServices
+            dockerfile: Dockerfile
+        depends_on:
+            - mongo
+
     client:
         image: ${DOCKER_REGISTRY-}client
         build:

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System.Text;
 
-namespace LongRunningJobImitator.Services;
+namespace LongRunningJobImitator.Services.Services;
 
 public class Base64TextConverter : ITextConverter
 {
@@ -45,7 +45,7 @@ public class Base64TextConverter : ITextConverter
 
             _logger.LogInformation($"Processing '{convertedText[currentPosition]}' symbol. JobId : {jobId}");
 
-            await _resultSender.SendResultAsync(jobId, convertedText[currentPosition].ToString());
+            await _resultSender.SendResultAsync(jobId, convertedText[currentPosition].ToString(), cancellation);
             var updateResult = await _jobAccessor.UpdateProgressAsync(jobId, currentPosition, cancellation);
             if (updateResult.MatchedCount != 1)
             {
@@ -54,7 +54,7 @@ public class Base64TextConverter : ITextConverter
         }
 
         await UpdateDoneStatusAsync(jobId, cancellation);
-        await _resultSender.SendDoneAsync(jobId);
+        await _resultSender.SendDoneAsync(jobId, cancellation);
         _logger.LogInformation($"Conversion is done. JobId : {jobId}");
     }
 
