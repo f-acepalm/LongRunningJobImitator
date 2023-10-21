@@ -6,7 +6,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Database__ConnectionString=mongodb://mongo:27017
-            - JobApi__Url=https://backgroundservices:443
+            - JobApi__Url=http://backgroundservices:80
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -19,7 +19,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Database__ConnectionString=mongodb://mongo:27017
-            - SignalRHub__Url=https://textconverterapi:5001
+            - SignalRHub__Url=http://textconverterapi:80
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
