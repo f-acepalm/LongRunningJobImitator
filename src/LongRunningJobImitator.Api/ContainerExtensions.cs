@@ -29,7 +29,7 @@ namespace LongRunningJobImitator.Api
             // TODO: Check:
             // Per the official Mongo Client reuse guidelines, MongoClient should be registered in DI with a singleton service lifetime.
             // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
-            services.Configure<DbSettings>(configuration.GetSection("LongRunningJobImitatorDatabase"))
+            services.Configure<DbSettings>(configuration.GetSection("Database"))
                 .AddSingleton<IJobAccessor, JobAccessor>();
 
             return services;
