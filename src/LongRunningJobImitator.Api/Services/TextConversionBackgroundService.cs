@@ -1,5 +1,4 @@
-﻿using LongRunningJobImitator.Api.Interfaces;
-using LongRunningJobImitator.Services.Interfaces;
+﻿using LongRunningJobImitator.Services.Interfaces;
 using System.Collections.Concurrent;
 
 namespace LongRunningJobImitator.Api.Services

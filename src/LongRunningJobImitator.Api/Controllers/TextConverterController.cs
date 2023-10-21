@@ -1,6 +1,5 @@
-using LongRunningJobImitator.Api.Mediator.Requests;
 using LongRunningJobImitator.Api.Models;
-using MediatR;
+using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LongRunningJobImitator.Api.Controllers;
@@ -9,18 +8,17 @@ namespace LongRunningJobImitator.Api.Controllers;
 [Route("[controller]")]
 public class TextConverterController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly IJobManager _jobManager;
 
-    public TextConverterController(IMediator mediator)
+    public TextConverterController(IJobManager jobManager)
     {
-        _mediator = mediator;
+        _jobManager = jobManager;
     }
 
     [HttpPost("start")]
     public async Task<ActionResult<TextConverterResponse>> StartProcessing([FromBody] TextConverterRequest request, CancellationToken cancellation)
     {
-        var jobId = Guid.NewGuid();
-        await _mediator.Send(new ConversionRequestedEvent(jobId, request.Text), cancellation);
+        var jobId = await _jobManager.StartJobAsync(new(request.Text), cancellation);
 
         return new TextConverterResponse(jobId);
     }
@@ -28,7 +26,7 @@ public class TextConverterController : ControllerBase
     [HttpPost("cancel")]
     public async Task<ActionResult> CancelProcessing([FromBody] CancelConversionRequest request, CancellationToken cancellation)
     {
-        await _mediator.Send(new ConversionCanceledEvent(request.JobId), cancellation);
+        await _jobManager.CancelJobAsync(new(request.JobId), cancellation);
 
         return Ok();
     }

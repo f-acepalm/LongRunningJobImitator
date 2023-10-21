@@ -2,26 +2,24 @@
 using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace LongRunningJobImitator.Api.Services
+namespace LongRunningJobImitator.Api.Services;
+public class SignalRResultSender : ITextConversionResultSender
 {
-    public class SignalRResultSender : ITextConversionResultSender
+    private readonly IHubContext<TextConversionHub> _hub;
+
+    public SignalRResultSender(IHubContext<TextConversionHub> hub)
     {
-        private readonly IHubContext<TextConversionHub> _hub;
+        _hub = hub;
+    }
 
-        public SignalRResultSender(IHubContext<TextConversionHub> hub)
-        {
-            _hub = hub;
-        }
-
-        public async Task SendResultAsync(Guid jobId, string result)
-        {
-            await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionResult", result);
-        }
+    public async Task SendResultAsync(Guid jobId, string result)
+    {
+        await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionResult", result);
+    }
 
 
-        public async Task SendDoneAsync(Guid jobId)
-        {
-            await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionDone");
-        }
+    public async Task SendDoneAsync(Guid jobId)
+    {
+        await _hub.Clients.Group(jobId.ToString()).SendAsync("ConversionDone");
     }
 }
