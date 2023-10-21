@@ -1,5 +1,4 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
 
 namespace LongRunningJobImitator.Accessors.Models;
 
@@ -8,5 +7,6 @@ public record JobDoc(
     Guid Id,
     JobStatus Status,
     string Text,
+    string Result,
     int ProcessingPosition
     );

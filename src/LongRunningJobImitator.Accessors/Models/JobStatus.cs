@@ -3,5 +3,6 @@ public enum JobStatus
 {
     NotStarted,
     InProgress,
+    Canceled,
     Done
 }

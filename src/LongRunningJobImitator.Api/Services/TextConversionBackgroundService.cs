@@ -59,10 +59,17 @@ namespace LongRunningJobImitator.Api.Services
 
         private async Task ProcessText(Guid jobId, string text, CancellationToken cancellation)
         {
-            await _textConverter.ConvertAsync(jobId, text, cancellation);
-            if (_tokens.TryRemove(jobId, out _))
+            try
             {
-                _logger.LogInformation($"Job is done: {jobId}");
+                await _textConverter.ConvertAsync(jobId, text, cancellation);
+                if (_tokens.TryRemove(jobId, out _))
+                {
+                    _logger.LogInformation($"Job is done: {jobId}");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation($"Job was canceled. JobId : {jobId}");
             }
         }
     }

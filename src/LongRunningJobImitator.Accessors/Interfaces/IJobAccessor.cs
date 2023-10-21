@@ -1,15 +1,18 @@
 ﻿using LongRunningJobImitator.Accessors.Models;
+using MongoDB.Driver;
 
 namespace LongRunningJobImitator.Accessors.Interfaces;
 public interface IJobAccessor
 {
-    Task CreateAsync(JobDoc doc);
+    Task CreateAsync(JobDoc doc, CancellationToken cancellation);
 
-    Task<IEnumerable<JobDoc>> GetAllAsync();
+    Task<JobDoc> GetAsync(Guid id, CancellationToken cancellation);
 
-    Task<JobDoc?> GetAsync(Guid id);
+    Task<UpdateResult> UpdateToInProgressAsync(Guid JobId, string conversionResult, CancellationToken cancellation);
 
-    Task RemoveAsync(Guid id);
+    Task<UpdateResult> UpdateToDoneAsync(Guid JobId, CancellationToken cancellation);
 
-    Task UpdateAsync(Guid id, JobDoc doc);
+    Task<UpdateResult> UpdateToCanceledAsync(Guid JobId, CancellationToken cancellation);
+
+    Task<UpdateResult> UpdateProgressAsync(Guid JobId, int currentPosition, CancellationToken cancellation);
 }
