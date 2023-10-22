@@ -8,5 +8,4 @@ public record JobDoc(
     JobStatus Status,
     string Text,
     string Result,
-    int ProcessingPosition
-    );
+    int ProcessingPosition);

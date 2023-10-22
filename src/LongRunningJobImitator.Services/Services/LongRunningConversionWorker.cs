@@ -31,14 +31,14 @@ public class LongRunningConversionWorker : ITextConversionWorker
     public async Task StartJobAsync(Guid jobId, CancellationToken cancellation)
     {
         _logger.LogInformation($"Starting conversion. JobId : {jobId}");
-        ValidateInput(jobId);
         
+        ValidateInput(jobId);
         var jobDoc = await _jobAccessor.GetAsync(jobId, cancellation);
-
         var convertedText = _textEncoder.Encode(jobDoc.Text);
         await UpdateInProgressStatusAsync(jobId, convertedText, cancellation);
+        var currentPosition = jobDoc.ProcessingPosition;
 
-        for (var currentPosition = 0; currentPosition < convertedText.Length; currentPosition++)
+        while (currentPosition < convertedText.Length)
         {
             await _longProcessImitator.DoSomething();
             await CheckCancelationAsync(jobId, cancellation);
@@ -46,7 +46,7 @@ public class LongRunningConversionWorker : ITextConversionWorker
             _logger.LogInformation($"Processing '{convertedText[currentPosition]}' symbol. JobId : {jobId}");
 
             await _resultSender.SendResultAsync(jobId, convertedText[currentPosition].ToString(), cancellation);
-            await UpdateProgressAsync(jobId, currentPosition, cancellation);
+            await UpdateProgressAsync(jobId, currentPosition++, cancellation);
         }
 
         await UpdateDoneStatusAsync(jobId, cancellation);
