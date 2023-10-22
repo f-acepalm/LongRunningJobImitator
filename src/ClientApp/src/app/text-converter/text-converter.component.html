@@ -13,7 +13,7 @@
         </mat-form-field>
 
         <div class="button-row">
-            <button mat-raised-button color="primary" (click)="convertText()" [disabled]="isLoading || !inputForm?.value">
+            <button mat-raised-button color="primary" (click)="convertText()" [disabled]="isLoading || !inputForm.value">
                 Convert
             </button>
             <button mat-raised-button color="primary" (click)="cancelConversion()" [disabled]="!isLoading">

@@ -27,3 +27,10 @@ services:
             dockerfile: Dockerfile
         depends_on:
             - textconverterapi
+
+    nginx:
+        image: ${DOCKER_REGISTRY-}nginx
+        build:
+            context: ./Nginx
+            dockerfile: Dockerfile
+    

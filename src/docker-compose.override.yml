@@ -31,3 +31,7 @@ services:
     client:
         ports:
             - "9000:80"
+    
+    nginx:
+        ports:
+            - "80:80"
