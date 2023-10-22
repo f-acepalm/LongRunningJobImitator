@@ -3,6 +3,7 @@ import { TextConverterService } from './text-converter.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { CancelTextConversionRequest, StartTextConversionRequest } from './models/text-converter.interface';
 import { SignalrService } from '../shared/signalr/signalr.service';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'text-converter',
@@ -10,11 +11,11 @@ import { SignalrService } from '../shared/signalr/signalr.service';
   styleUrls: ['./text-converter.component.scss']
 })
 export class TextConverterComponent {
-  inputText: string = '';
   outputText$ = new BehaviorSubject('');
   isLoading = false;
   messagesSubscription$: Subscription | undefined;
   doneSubscription$: Subscription | undefined;
+  inputForm = new FormControl('', [Validators.required]);
   private currentJobId: string | undefined;
 
   constructor(
@@ -29,17 +30,36 @@ export class TextConverterComponent {
     this.outputText$.next('');
     this.isLoading = true;
     const requset: StartTextConversionRequest = {
-      text: this.inputText
+      text: this.inputForm.value!
     };
 
     // TODO: catch errors
-    this.service.startProcessing(requset).subscribe(result => {
-      this.signalrService.joinGroup(result.jobId).then(() => {
-        this.currentJobId = result.jobId;
-      }, (err) => {
-        console.log(err);
-      })
+    this.service.startProcessing(requset).subscribe({
+      next: result => {
+        this.signalrService.joinGroup(result.jobId).then(() => {
+          this.currentJobId = result.jobId;
+        }, (err) => {
+          console.log(err);
+        })
+      },
+      error: (error) => { 
+        console.error(error);
+        this.inputForm.setErrors({ 'submitError': error.error.Message });
+        this.isLoading = false;
+      }
     });
+  }
+
+  getErrorMessage() {
+    if (this.inputForm.hasError('required')) {
+      return 'You must enter a value';
+    }
+
+    if (this.inputForm.hasError('submitError')) {
+      return this.inputForm.getError('submitError');
+    }
+
+    return '';
   }
 
   cancelConversion(): void {

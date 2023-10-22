@@ -8,11 +8,12 @@
         <h1 class="header">To convert your text to Base64 format, enter you text to the text area and click 'Convert'</h1>
         <mat-form-field class="input-field">
             <mat-label>Enter your text here</mat-label>
-            <textarea matInput [(ngModel)]="inputText"></textarea>
+            <textarea matInput [formControl]="inputForm"></textarea>
+            <mat-error *ngIf="inputForm?.invalid">{{ getErrorMessage() }}</mat-error>
         </mat-form-field>
 
         <div class="button-row">
-            <button mat-raised-button color="primary" (click)="convertText()" [disabled]="isLoading || !inputText">
+            <button mat-raised-button color="primary" (click)="convertText()" [disabled]="isLoading || !inputForm?.value">
                 Convert
             </button>
             <button mat-raised-button color="primary" (click)="cancelConversion()" [disabled]="!isLoading">
