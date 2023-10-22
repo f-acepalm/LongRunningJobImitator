@@ -32,10 +32,9 @@ public class JobManager : IJobManager
 
         var httpResponseMessage = await _httpClient.PostAsync(Constants.JobClientName, "job/start", data, cancellation);
 
-        // TODO: better handling
         if (!httpResponseMessage.IsSuccessStatusCode)
         {
-            _logger.LogWarning($"Cannot start job. JobId: {jobId}");
+            throw new HttpRequestException("Can not start processing. Server unavailable.");
         }
 
         return jobId;

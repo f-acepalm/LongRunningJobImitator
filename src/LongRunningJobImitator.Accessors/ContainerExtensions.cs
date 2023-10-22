@@ -15,7 +15,6 @@ public static class ContainerExtensions
         BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
-        // TODO: Check:
         // Per the official Mongo Client reuse guidelines, MongoClient should be registered in DI with a singleton service lifetime.
         // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
         services.Configure<DbSettings>(configuration.GetSection("Database"))

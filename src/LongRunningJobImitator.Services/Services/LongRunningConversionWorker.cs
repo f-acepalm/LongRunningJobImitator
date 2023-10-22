@@ -95,8 +95,7 @@ public class LongRunningConversionWorker : ITextConversionWorker
     {
         if (startResult.ModifiedCount != 1)
         {
-            // TODO: Better handling, Canceled???
-            throw new InvalidOperationException("Something wrong");
+            throw new InvalidOperationException("Job state is invalid");
         }
     }
 

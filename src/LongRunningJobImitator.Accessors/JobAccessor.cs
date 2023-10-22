@@ -11,7 +11,7 @@ public class JobAccessor : BaseAccessor<JobDoc>, IJobAccessor
     }
 
     public async Task<JobDoc> GetAsync(Guid id, CancellationToken cancellation) =>
-        await Collection.Find(x => x.Id == id).FirstAsync(cancellation); // TODO: null?
+        await Collection.Find(x => x.Id == id).FirstAsync(cancellation);
 
     public async Task CreateAsync(JobDoc doc, CancellationToken cancellation) =>
         await Collection.InsertOneAsync(doc, cancellationToken: cancellation);

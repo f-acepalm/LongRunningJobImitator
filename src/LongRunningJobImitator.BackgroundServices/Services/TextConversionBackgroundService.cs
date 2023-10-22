@@ -24,8 +24,7 @@ public class TextConversionBackgroundService : BackgroundService, ITextConversio
         var tokenSource = new CancellationTokenSource();
         if (_tokens.TryAdd(jobId, tokenSource))
         {
-            //TODO: Check, exceptions
-            Task.Run(async () => await ProcessText(jobId, tokenSource.Token));
+            _ = Task.Run(async () => await ProcessText(jobId, tokenSource.Token));
         }
 
         await Task.CompletedTask;
