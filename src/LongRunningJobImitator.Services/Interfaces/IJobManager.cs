@@ -1,6 +1,4 @@
-﻿using LongRunningJobImitator.Services.Models;
-
-namespace LongRunningJobImitator.Services.Interfaces;
+﻿namespace LongRunningJobImitator.Services.Interfaces;
 public interface IJobManager
 {
     Task CancelJobAsync(Guid jobId, CancellationToken cancellation);

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LongRunningJobImitator.ClientContracts\LongRunningJobImitator.ClientContracts.csproj" />
     <ProjectReference Include="..\LongRunningJobImitator.Services\LongRunningJobImitator.Services.csproj" />
   </ItemGroup>
 

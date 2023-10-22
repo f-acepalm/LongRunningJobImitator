@@ -1,5 +1,5 @@
-using LongRunningJobImitator.BackgroundServices.Models;
-using LongRunningJobImitator.Services.Interfaces;
+using LongRunningJobImitator.BackgroundServices.Interfaces;
+using LongRunningJobImitator.ClientContracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LongRunningJobImitator.BackgroundServices.Controllers;
@@ -15,9 +15,9 @@ public class JobController : ControllerBase
     }
 
     [HttpPost("start")]
-    public async Task<ActionResult> StartAsync(StartJobRequest request, CancellationToken cancellation)
+    public async Task<ActionResult> StartAsync(StartJobRequest request)
     {
-        await _backgroundService.StartProcessingAsync(request.JobId, request.text);
+        await _backgroundService.StartProcessingAsync(request.JobId);
 
         return Ok();
     }

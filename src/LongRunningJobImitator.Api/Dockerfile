@@ -8,8 +8,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["LongRunningJobImitator.Api/LongRunningJobImitator.Api.csproj", "LongRunningJobImitator.Api/"]
-COPY ["LongRunningJobImitator.Services/LongRunningJobImitator.Services.csproj", "LongRunningJobImitator.Services/"]
-COPY ["LongRunningJobImitator.Accessors/LongRunningJobImitator.Accessors.csproj", "LongRunningJobImitator.Accessors/"]
 RUN dotnet restore "LongRunningJobImitator.Api/LongRunningJobImitator.Api.csproj"
 COPY . .
 WORKDIR "/src/LongRunningJobImitator.Api"

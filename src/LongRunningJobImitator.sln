@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LongRunningJobImitator.Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LongRunningJobImitator.Services.Tests", "LongRunningJobImitator.Services.Tests\LongRunningJobImitator.Services.Tests.csproj", "{7B8374A8-E7DB-4122-B209-40C61B2D52DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongRunningJobImitator.Accessors", "LongRunningJobImitator.Accessors\LongRunningJobImitator.Accessors.csproj", "{C5450756-CBB9-4E19-85CE-6D263B318FD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LongRunningJobImitator.Accessors", "LongRunningJobImitator.Accessors\LongRunningJobImitator.Accessors.csproj", "{C5450756-CBB9-4E19-85CE-6D263B318FD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongRunningJobImitator.BackgroundServices", "LongRunningJobImitator.BackgroundServices\LongRunningJobImitator.BackgroundServices.csproj", "{2236600F-09D1-4734-8945-9CF8B20DE2A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LongRunningJobImitator.BackgroundServices", "LongRunningJobImitator.BackgroundServices\LongRunningJobImitator.BackgroundServices.csproj", "{2236600F-09D1-4734-8945-9CF8B20DE2A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongRunningJobImitator.ClientContracts", "LongRunningJobImitator.ClientContracts\LongRunningJobImitator.ClientContracts.csproj", "{8961EC85-66DB-4B5A-8217-8A437B4347D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{2236600F-09D1-4734-8945-9CF8B20DE2A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2236600F-09D1-4734-8945-9CF8B20DE2A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2236600F-09D1-4734-8945-9CF8B20DE2A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8961EC85-66DB-4B5A-8217-8A437B4347D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8961EC85-66DB-4B5A-8217-8A437B4347D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8961EC85-66DB-4B5A-8217-8A437B4347D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8961EC85-66DB-4B5A-8217-8A437B4347D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

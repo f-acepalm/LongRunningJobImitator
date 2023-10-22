@@ -1,25 +1,22 @@
 ﻿using LongRunningJobImitator.Accessors.Interfaces;
 using LongRunningJobImitator.Accessors.Models;
+using LongRunningJobImitator.ClientContracts.Requests;
 using LongRunningJobImitator.Services.Interfaces;
-using LongRunningJobImitator.Services.Models;
 using Microsoft.Extensions.Logging;
-using static System.Net.Mime.MediaTypeNames;
-using System.Text.Json;
-using System.Text;
 
 namespace LongRunningJobImitator.Services.Services;
 public class JobManager : IJobManager
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IRetriableHttpClient _httpClient;
     private readonly ILogger<JobManager> _logger;
     private IJobAccessor _jobAccessor;
 
     public JobManager(
-        IHttpClientFactory httpClientFactory,
+        IRetriableHttpClient httpClient,
         ILogger<JobManager> logger,
         IJobAccessor jobAccessor)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClient = httpClient;
         _logger = logger;
         _jobAccessor = jobAccessor;
     }
@@ -28,9 +25,9 @@ public class JobManager : IJobManager
     {
         var jobId = Guid.NewGuid();
         await CreateInitialRecord(jobId, text, cancellation);
-        var data = new StartJobModel(jobId, text);
+        var data = new StartJobRequest(jobId);
 
-        var httpResponseMessage = await SendRequestAsync("job/start", data, cancellation);
+        var httpResponseMessage = await _httpClient.PostAsync(Constants.JobClientName, "job/start", data, cancellation);
 
         // TODO: better handling
         if (!httpResponseMessage.IsSuccessStatusCode)
@@ -55,20 +52,5 @@ public class JobManager : IJobManager
                         string.Empty,
                         0),
                         cancellationToken);
-    }
-
-    private async Task<HttpResponseMessage> SendRequestAsync<T>(string url, T data, CancellationToken cancellation)
-    {
-        var httpClient = _httpClientFactory.CreateClient(Constants.JobClientName);
-        var content = new StringContent(
-            JsonSerializer.Serialize(data),
-            Encoding.UTF8,
-            Application.Json);
-
-        var httpResponseMessage = await httpClient.PostAsync(
-            url,
-            content,
-            cancellation);
-        return httpResponseMessage;
     }
 }

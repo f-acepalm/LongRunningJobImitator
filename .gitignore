@@ -12,3 +12,5 @@ src/LongRunningJobImitator.Accessors/obj/
 src/LongRunningJobImitator.Accessors/bin/
 src/LongRunningJobImitator.BackgroundServices/obj/
 src/LongRunningJobImitator.BackgroundServices/bin/
+src/LongRunningJobImitator.ClientContracts/obj/
+src/LongRunningJobImitator.ClientContracts/bin/

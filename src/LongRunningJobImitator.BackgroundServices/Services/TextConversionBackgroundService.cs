@@ -1,4 +1,5 @@
-﻿using LongRunningJobImitator.Services.Interfaces;
+﻿using LongRunningJobImitator.BackgroundServices.Interfaces;
+using LongRunningJobImitator.Services.Interfaces;
 using System.Collections.Concurrent;
 
 namespace LongRunningJobImitator.BackgroundServices.Services;
@@ -6,18 +7,18 @@ namespace LongRunningJobImitator.BackgroundServices.Services;
 public class TextConversionBackgroundService : BackgroundService, ITextConversionBackgroundService
 {
     private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
-    private readonly ITextConverter _textConverter;
+    private readonly ITextConversionWorker _textConverter;
     private readonly ILogger<TextConversionBackgroundService> _logger;
 
     public TextConversionBackgroundService(
-        ITextConverter textConverter,
+        ITextConversionWorker textConverter,
         ILogger<TextConversionBackgroundService> logger)
     {
         _textConverter = textConverter;
         _logger = logger;
     }
 
-    public async Task StartProcessingAsync(Guid jobId, string text)
+    public async Task StartProcessingAsync(Guid jobId)
     {
         _logger.LogInformation($"Starting job: {jobId}");
 
@@ -25,7 +26,7 @@ public class TextConversionBackgroundService : BackgroundService, ITextConversio
         if (_tokens.TryAdd(jobId, tokenSource))
         {
             //TODO: Check, exceptions
-            Task.Run(async () => await ProcessText(jobId, text, tokenSource.Token));
+            Task.Run(async () => await ProcessText(jobId, tokenSource.Token));
         }
 
         await Task.CompletedTask;
@@ -56,11 +57,11 @@ public class TextConversionBackgroundService : BackgroundService, ITextConversio
         }
     }
 
-    private async Task ProcessText(Guid jobId, string text, CancellationToken cancellation)
+    private async Task ProcessText(Guid jobId, CancellationToken cancellation)
     {
         try
         {
-            await _textConverter.ConvertAsync(jobId, text, cancellation);
+            await _textConverter.StartJobAsync(jobId,  cancellation);
             if (_tokens.TryRemove(jobId, out _))
             {
                 _logger.LogInformation($"Job is done: {jobId}");

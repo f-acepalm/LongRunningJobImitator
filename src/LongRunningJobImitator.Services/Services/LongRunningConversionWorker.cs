@@ -3,54 +3,50 @@ using LongRunningJobImitator.Accessors.Models;
 using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using System.Text;
 
 namespace LongRunningJobImitator.Services.Services;
 
-public class Base64TextConverter : ITextConverter
+public class LongRunningConversionWorker : ITextConversionWorker
 {
     private readonly ITextConversionResultSender _resultSender;
-    private readonly ILogger<Base64TextConverter> _logger;
+    private readonly ILogger<LongRunningConversionWorker> _logger;
     private readonly ILongProcessImitator _longProcessImitator;
     private readonly IJobAccessor _jobAccessor;
+    private readonly ITextEncoder _textEncoder;
 
-    public Base64TextConverter(
+    public LongRunningConversionWorker(
         ITextConversionResultSender resultSender,
-        ILogger<Base64TextConverter> logger,
+        ILogger<LongRunningConversionWorker> logger,
         ILongProcessImitator longProcessImitator,
-        IJobAccessor jobAccessor)
+        IJobAccessor jobAccessor,
+        ITextEncoder textEncoder)
     {
         _resultSender = resultSender;
         _logger = logger;
         _longProcessImitator = longProcessImitator;
         _jobAccessor = jobAccessor;
+        _textEncoder = textEncoder;
     }
 
-    public async Task ConvertAsync(Guid jobId, string text, CancellationToken cancellation)
+    public async Task StartJobAsync(Guid jobId, CancellationToken cancellation)
     {
         _logger.LogInformation($"Starting conversion. JobId : {jobId}");
-        ValidateInput(jobId, text);
+        ValidateInput(jobId);
+        
+        var jobDoc = await _jobAccessor.GetAsync(jobId, cancellation);
 
-        var convertedText = Base64Encode(text);
+        var convertedText = _textEncoder.Encode(jobDoc.Text);
         await UpdateInProgressStatusAsync(jobId, convertedText, cancellation);
 
         for (var currentPosition = 0; currentPosition < convertedText.Length; currentPosition++)
         {
             await _longProcessImitator.DoSomething();
-            var jobDoc = await _jobAccessor.GetAsync(jobId, cancellation);
-            if (cancellation.IsCancellationRequested || jobDoc.Status == JobStatus.Canceled)
-            {
-                CancelJob(jobId);
-            }
+            await CheckCancelationAsync(jobId, cancellation);
 
             _logger.LogInformation($"Processing '{convertedText[currentPosition]}' symbol. JobId : {jobId}");
 
             await _resultSender.SendResultAsync(jobId, convertedText[currentPosition].ToString(), cancellation);
-            var updateResult = await _jobAccessor.UpdateProgressAsync(jobId, currentPosition, cancellation);
-            if (updateResult.MatchedCount != 1)
-            {
-                CancelJob(jobId);
-            }
+            await UpdateProgressAsync(jobId, currentPosition, cancellation);
         }
 
         await UpdateDoneStatusAsync(jobId, cancellation);
@@ -58,20 +54,22 @@ public class Base64TextConverter : ITextConverter
         _logger.LogInformation($"Conversion is done. JobId : {jobId}");
     }
 
-    internal string Base64Encode(string text)
+    private async Task UpdateProgressAsync(Guid jobId, int currentPosition, CancellationToken cancellation)
     {
-        ValidateInput(text);
-        var textBytes = Encoding.UTF8.GetBytes(text);
-
-        return Convert.ToBase64String(textBytes);
+        var updateResult = await _jobAccessor.UpdateProgressAsync(jobId, currentPosition, cancellation);
+        if (updateResult.MatchedCount != 1)
+        {
+            CancelJob(jobId);
+        }
     }
 
-    internal string Base64Decode(string base64String)
+    private async Task CheckCancelationAsync(Guid jobId, CancellationToken cancellation)
     {
-        ValidateInput(base64String);
-        var base64EncodedBytes = Convert.FromBase64String(base64String);
-
-        return Encoding.UTF8.GetString(base64EncodedBytes);
+        var jobDoc = await _jobAccessor.GetAsync(jobId, cancellation);
+        if (cancellation.IsCancellationRequested || jobDoc.Status == JobStatus.Canceled)
+        {
+            CancelJob(jobId);
+        }
     }
 
     private void CancelJob(Guid jobId)
@@ -102,21 +100,11 @@ public class Base64TextConverter : ITextConverter
         }
     }
 
-    private static void ValidateInput(Guid jobId, string text)
+    private static void ValidateInput(Guid jobId)
     {
-        ValidateInput(text);
-
         if (jobId == default)
         {
             throw new ArgumentException("jobId can not be empty");
-        }
-    }
-
-    private static void ValidateInput(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            throw new ArgumentException("Text can not be empty");
         }
     }
 }
