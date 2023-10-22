@@ -1,5 +1,4 @@
-﻿using LongRunningJobImitator.Api.Interfaces;
-using LongRunningJobImitator.Api.Services;
+﻿using LongRunningJobImitator.Api.SignalR;
 
 namespace LongRunningJobImitator.Api;
 
@@ -7,8 +6,13 @@ public static class ContainerExtensions
 {
     public static IServiceCollection AddLongRunningJobImitatorApiServices(this IServiceCollection services)
     {
-        services.AddTransient<ISignalRSender, SignalRSender>();
+        return services.AddTransient<ISignalRSender, SignalRSender>();
+    }
 
-        return services;
+    public static IApplicationBuilder UseGlobalExceptionHandling(this IApplicationBuilder applicationBuilder)
+    {
+        applicationBuilder.UseMiddleware<ExceptionHandlerMiddleware>();
+
+        return applicationBuilder;
     }
 }

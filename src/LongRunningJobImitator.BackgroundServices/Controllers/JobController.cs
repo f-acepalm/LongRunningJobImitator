@@ -1,4 +1,4 @@
-using LongRunningJobImitator.BackgroundServices.Interfaces;
+using LongRunningJobImitator.BackgroundServices.Services;
 using LongRunningJobImitator.ClientContracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 

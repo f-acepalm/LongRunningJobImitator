@@ -1,6 +1,7 @@
 ﻿using LongRunningJobImitator.Accessors.Interfaces;
 using LongRunningJobImitator.Accessors.Models;
 using LongRunningJobImitator.ClientContracts.Requests;
+using LongRunningJobImitator.Services.Exceptions;
 using LongRunningJobImitator.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -23,6 +24,8 @@ public class JobManager : IJobManager
 
     public async Task<Guid> StartJobAsync(string text, CancellationToken cancellation)
     {
+        ValidateInput(text);
+        
         var jobId = Guid.NewGuid();
         await CreateInitialRecord(jobId, text, cancellation);
         var data = new StartJobRequest(jobId);
@@ -41,6 +44,14 @@ public class JobManager : IJobManager
     public async Task CancelJobAsync(Guid jobId, CancellationToken cancellation)
     {
         await _jobAccessor.UpdateToCanceledAsync(jobId, cancellation);
+    }
+
+    private void ValidateInput(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            throw new ValidationException("Text can not be empty.");
+        }
     }
 
     private async Task CreateInitialRecord(Guid jobId, string text, CancellationToken cancellationToken)

@@ -1,8 +1,6 @@
-﻿using LongRunningJobImitator.Api.Interfaces;
-using LongRunningJobImitator.Api.SignalR;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 
-namespace LongRunningJobImitator.Api.Services;
+namespace LongRunningJobImitator.Api.SignalR;
 public class SignalRSender : ISignalRSender
 {
     private readonly IHubContext<TextConversionHub> _hub;

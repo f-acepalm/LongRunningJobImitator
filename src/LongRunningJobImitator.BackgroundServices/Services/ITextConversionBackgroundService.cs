@@ -1,4 +1,4 @@
-﻿namespace LongRunningJobImitator.BackgroundServices.Interfaces;
+﻿namespace LongRunningJobImitator.BackgroundServices.Services;
 
 public interface ITextConversionBackgroundService
 {

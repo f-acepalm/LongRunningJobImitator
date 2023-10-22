@@ -1,5 +1,4 @@
-﻿using LongRunningJobImitator.BackgroundServices.Interfaces;
-using LongRunningJobImitator.Services.Interfaces;
+﻿using LongRunningJobImitator.Services.Interfaces;
 using System.Collections.Concurrent;
 
 namespace LongRunningJobImitator.BackgroundServices.Services;

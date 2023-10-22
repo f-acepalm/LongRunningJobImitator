@@ -1,4 +1,4 @@
-﻿namespace LongRunningJobImitator.Api.Interfaces;
+﻿namespace LongRunningJobImitator.Api.SignalR;
 
 public interface ISignalRSender
 {

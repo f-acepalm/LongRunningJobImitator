@@ -1,4 +1,4 @@
-﻿using LongRunningJobImitator.Api.Interfaces;
+﻿using LongRunningJobImitator.Api.SignalR;
 using LongRunningJobImitator.ClientContracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 

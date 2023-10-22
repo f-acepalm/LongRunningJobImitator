@@ -1,4 +1,3 @@
-using LongRunningJobImitator.Accessors;
 using LongRunningJobImitator.Api.SignalR;
 using LongRunningJobImitator.Services;
 
@@ -40,6 +39,7 @@ public class Program
         //app.UseHttpsRedirection();
         app.UseCors("CorsPolicy");
         app.UseAuthorization();
+        app.UseGlobalExceptionHandling();
         app.MapControllers();
         app.MapHub<TextConversionHub>("/text-conversion-hub");
 
