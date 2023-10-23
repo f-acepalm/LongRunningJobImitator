@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class SignalrService {
-  private hubPath = environment.apiUrl + "/text-conversion-hub"
+  private hubPath = environment.signalRUrl + "/text-conversion-hub"
   private hubConnection: HubConnection | undefined;
   private messageSubject$ = new Subject<string>();
   private doneSubject$ = new Subject<void>();

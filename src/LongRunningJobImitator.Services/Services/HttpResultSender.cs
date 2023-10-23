@@ -7,7 +7,7 @@ public class HttpResultSender : ITextConversionResultSender
 {
     private readonly IRetriableHttpClient _httpClient;
     private readonly ILogger<HttpResultSender> _logger;
-    private const string _notificationEndpoint = "Notification";
+    private const string _notificationEndpoint = "api/Notification";
 
     public HttpResultSender(IRetriableHttpClient httpClient, ILogger<HttpResultSender> logger)
     {
