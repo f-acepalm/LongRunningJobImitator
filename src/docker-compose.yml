@@ -7,10 +7,16 @@ services:
     textconverterapi:
         image: ${DOCKER_REGISTRY-}api
         build:
-            context: .
-            dockerfile: LongRunningJobImitator.Api/Dockerfile
+            context: ./LongRunningJobImitator.Api
+            dockerfile: Dockerfile
         depends_on:
             - mongo
+
+    notificationapi:
+        image: ${DOCKER_REGISTRY-}notificationapi
+        build:
+            context: ./LongRunningJobImitator.Notification.Api
+            dockerfile: Dockerfile
 
     backgroundservices:
         image: ${DOCKER_REGISTRY-}backgroundservices

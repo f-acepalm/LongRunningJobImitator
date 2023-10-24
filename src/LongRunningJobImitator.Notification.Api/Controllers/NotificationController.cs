@@ -1,24 +1,24 @@
-﻿using LongRunningJobImitator.Api.SignalR;
-using LongRunningJobImitator.ClientContracts.Requests;
+﻿using LongRunningJobImitator.ClientContracts.Requests;
+using LongRunningJobImitator.Notification.Api.SignalR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LongRunningJobImitator.Api.Controllers;
+namespace LongRunningJobImitator.Notification.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class NotificationController : ControllerBase
 {
-    private readonly ISignalRSender _signalRSender;
+    private readonly INotifier _notifier;
 
-    public NotificationController(ISignalRSender signalRSender)
+    public NotificationController(INotifier notifier)
     {
-        _signalRSender = signalRSender;
+        _notifier = notifier;
     }
 
     [HttpPost("Result")]
     public async Task<ActionResult> SendResultAsync([FromBody] ResultNotificationRequest request, CancellationToken cancellation)
     {
-        await _signalRSender.SendResultAsync(request.JobId, request.Result, cancellation);
+        await _notifier.SendResultAsync(request.JobId, request.Result, cancellation);
 
         return Ok();
     }
@@ -27,7 +27,7 @@ public class NotificationController : ControllerBase
     [HttpPost("Done")]
     public async Task<ActionResult> SendDoneAsync([FromBody] DoneNotificationRequest request, CancellationToken cancellation)
     {
-        await _signalRSender.SendDoneAsync(request.JobId, cancellation);
+        await _notifier.SendDoneAsync(request.JobId, cancellation);
 
         return Ok();
     }

@@ -14,12 +14,23 @@ services:
             - "5000:80"
             - "5001:443"
 
+    notificationapi:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+        ports:
+            - "5010:80"
+            - "5011:443"
+
     backgroundservices:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Database__ConnectionString=mongodb://mongo:27017
-            - SignalRHub__Url=http://textconverterapi:80
+            - SignalRHub__Url=http://notificationapi:80
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

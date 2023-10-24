@@ -1,6 +1,9 @@
-using LongRunningJobImitator.Services;
 
-namespace LongRunningJobImitator.Api;
+using LongRunningJobImitator.Api;
+using LongRunningJobImitator.Notification.Api.SignalR;
+
+namespace LongRunningJobImitator.Notification.Api;
+
 public class Program
 {
     public static void Main(string[] args)
@@ -11,8 +14,8 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer()
             .AddSwaggerGen()
-            .AddApiServices(builder.Configuration)
-            .AddApiServices();
+            .AddApiServices()
+            .AddSignalR();
 
         builder.Services.AddCors(x =>
         {
@@ -37,14 +40,14 @@ public class Program
         //app.UseHttpsRedirection();
         app.UseCors("CorsPolicy");
         app.UseAuthorization();
-        app.UseGlobalExceptionHandling();
         app.MapControllers();
+        app.MapHub<TextConversionHub>("/text-conversion-hub");
 
         app.Run();
     }
 
     private static string[] GetCorsAllowedOrigins(IConfiguration configuration)
-        => (configuration.GetSection("CorsAllowedOrigins").Get<IEnumerable<string>>() ?? Enumerable.Empty<string>())
-        .Distinct()
-        .ToArray();
+     => (configuration.GetSection("CorsAllowedOrigins").Get<IEnumerable<string>>() ?? Enumerable.Empty<string>())
+     .Distinct()
+     .ToArray();
 }

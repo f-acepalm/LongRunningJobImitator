@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace LongRunningJobImitator.Api.SignalR;
+namespace LongRunningJobImitator.Notification.Api.SignalR;
 
 public class TextConversionHub : Hub
 {

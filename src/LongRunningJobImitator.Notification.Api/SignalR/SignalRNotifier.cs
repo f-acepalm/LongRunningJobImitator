@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace LongRunningJobImitator.Api.SignalR;
-public class SignalRSender : ISignalRSender
+namespace LongRunningJobImitator.Notification.Api.SignalR;
+public class SignalRNotifier : INotifier
 {
     private readonly IHubContext<TextConversionHub> _hub;
 
-    public SignalRSender(IHubContext<TextConversionHub> hub)
+    public SignalRNotifier(IHubContext<TextConversionHub> hub)
     {
         _hub = hub;
     }

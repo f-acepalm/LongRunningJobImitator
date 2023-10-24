@@ -14,3 +14,5 @@ src/LongRunningJobImitator.BackgroundServices/obj/
 src/LongRunningJobImitator.BackgroundServices/bin/
 src/LongRunningJobImitator.ClientContracts/obj/
 src/LongRunningJobImitator.ClientContracts/bin/
+src/LongRunningJobImitator.Notification.Api/bin/
+src/LongRunningJobImitator.Notification.Api/obj/

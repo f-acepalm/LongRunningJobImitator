@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
-    signalRUrl:'http://localhost:5000',
+    signalRUrl:'http://localhost:5010',
     apiUrl:'http://localhost:5000/api',
-    // apiUrl: 'http://localhost/api',
-    // apiUrl: 'https://localhost:7207',
+    // signalRUrl:'http://localhost:5117',
+    // apiUrl:'http://localhost:5176/api',
 };
