@@ -23,7 +23,6 @@ export class SignalrService {
             console.log("Client was added to the group: " + groupName);
             return resolve(true);
           }, (err: any) => {
-            console.log(err);
             return reject(err);
           });
       } else {
@@ -41,7 +40,6 @@ export class SignalrService {
             console.log("Client was removed from the group: " + groupName);
             return resolve(true);
           }, (err: any) => {
-            console.log(err);
             return reject(err);
           });
       } else {
@@ -65,7 +63,6 @@ export class SignalrService {
           return resolve(true);
         })
         .catch((err: any) => {
-          console.log(err);
           reject(err);
         });
     });

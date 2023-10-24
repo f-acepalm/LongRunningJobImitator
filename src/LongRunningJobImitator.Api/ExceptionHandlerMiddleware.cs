@@ -35,8 +35,9 @@ public class ExceptionHandlerMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         var response = new ValidationErrorResponse(string.Join(';', ex.Errors.Select(x => x.ErrorMessage)));
+        JsonSerializerOptions options = new(JsonSerializerDefaults.Web);
 
-        return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        return context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
     }
 
     private static Task ConvertToServerErrorAsync(HttpContext context, Exception ex)

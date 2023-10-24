@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { CancelTextConversionRequest, StartTextConversionRequest } from './models/text-converter.interface';
 import { SignalrService } from '../shared/signalr/signalr.service';
 import { FormControl, Validators } from '@angular/forms';
+import { ApiError } from '../shared/api-error.interface';
 
 @Component({
   selector: 'text-converter',
@@ -42,9 +43,8 @@ export class TextConverterComponent {
           console.log(err);
         })
       },
-      error: (error) => { 
-        console.error(error);
-        this.inputForm.setErrors({ 'submitError': error.error.Message });
+      error: (error: ApiError) => { 
+        this.inputForm.setErrors({ 'submitError': error.message });
         this.isLoading = false;
       }
     });
@@ -76,8 +76,7 @@ export class TextConverterComponent {
       this.service.cancelProcessing(requset).subscribe({
         next: () => { 
           console.log('Canceled');
-        },
-        error: (error) => console.error(error)
+        }
       });
     }
   }

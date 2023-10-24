@@ -6,6 +6,8 @@ public class StartJobModelValidator : AbstractValidator<StartJobModel>
 {
     public StartJobModelValidator()
     {
-        RuleFor(x => x.Text).NotEmpty();
+        RuleFor(x => x.Text)
+            .NotEmpty()
+            .MaximumLength(100);
     }
 }
