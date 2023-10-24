@@ -1,33 +1,36 @@
-﻿using LongRunningJobImitator.Accessors.Interfaces;
+﻿using FluentValidation;
+using LongRunningJobImitator.Accessors.Interfaces;
 using LongRunningJobImitator.Accessors.Models;
 using LongRunningJobImitator.ClientContracts.Requests;
-using LongRunningJobImitator.Services.Exceptions;
 using LongRunningJobImitator.Services.Interfaces;
-using Microsoft.Extensions.Logging;
+using LongRunningJobImitator.Services.Models;
 
 namespace LongRunningJobImitator.Services.Services;
 public class JobManager : IJobManager
 {
     private readonly IRetriableHttpClient _httpClient;
-    private readonly ILogger<JobManager> _logger;
     private IJobAccessor _jobAccessor;
+    private readonly IValidator<StartJobModel> _startJobValidator;
+    private readonly IValidator<CancelJobModel> _cancelJobValidator;
 
     public JobManager(
         IRetriableHttpClient httpClient,
-        ILogger<JobManager> logger,
-        IJobAccessor jobAccessor)
+        IJobAccessor jobAccessor,
+        IValidator<StartJobModel> startJobValidator,
+        IValidator<CancelJobModel> cancelJobValidator)
     {
         _httpClient = httpClient;
-        _logger = logger;
         _jobAccessor = jobAccessor;
+        _startJobValidator = startJobValidator;
+        _cancelJobValidator = cancelJobValidator;
     }
 
-    public async Task<Guid> StartJobAsync(string text, CancellationToken cancellation)
+    public async Task<Guid> StartJobAsync(StartJobModel model, CancellationToken cancellation)
     {
-        ValidateInput(text);
-        
+        _startJobValidator.ValidateAndThrow(model);
+
         var jobId = Guid.NewGuid();
-        await CreateInitialRecord(jobId, text, cancellation);
+        await CreateInitialRecord(jobId, model.Text, cancellation);
         var data = new StartJobRequest(jobId);
 
         var httpResponseMessage = await _httpClient.PostAsync(Constants.JobClientName, "job/start", data, cancellation);
@@ -40,17 +43,11 @@ public class JobManager : IJobManager
         return jobId;
     }
 
-    public async Task CancelJobAsync(Guid jobId, CancellationToken cancellation)
+    public async Task CancelJobAsync(CancelJobModel model, CancellationToken cancellation)
     {
-        await _jobAccessor.UpdateToCanceledAsync(jobId, cancellation);
-    }
+        _cancelJobValidator.ValidateAndThrow(model);
 
-    private void ValidateInput(string text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            throw new ValidationException("Text can not be empty.");
-        }
+        await _jobAccessor.UpdateToCanceledAsync(model.JobId, cancellation);
     }
 
     private async Task CreateInitialRecord(Guid jobId, string text, CancellationToken cancellationToken)

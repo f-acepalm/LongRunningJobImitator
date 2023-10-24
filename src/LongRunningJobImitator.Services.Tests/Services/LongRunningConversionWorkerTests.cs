@@ -28,13 +28,13 @@ public class LongRunningConversionWorkerTests
         var actual = new StringBuilder();
 
         ConfigureAccessor(accessorMock, updateResultMock, doc);
-        encoderMock.Setup(x => x.Encode(doc.Text)).Returns(expected);
+        encoderMock.Setup(x => x.Encode(new(doc.Text))).Returns(expected);
         resultSenderMock.Setup(x => x.SendResultAsync(It.IsAny<Guid>(), It.IsAny<string>(), default))
             .Callback<Guid, string, CancellationToken>((_, value, _) => actual.Append(value))
             .Returns(Task.CompletedTask);
 
         // Act
-        await sut.StartJobAsync(jobId, default);
+        await sut.StartJobAsync(new(jobId), default);
 
         // Assert
         actual.ToString().Should().Be(expected);
@@ -54,7 +54,7 @@ public class LongRunningConversionWorkerTests
         ConfigureAccessor(accessorMock, updateResultMock, doc);
 
         // Act
-        await sut.StartJobAsync(jobId, default);
+        await sut.StartJobAsync(new(jobId), default);
 
         // Assert
         resultSenderMock.Verify(x => x.SendDoneAsync(jobId, default), Times.Once());

@@ -1,7 +1,9 @@
-﻿namespace LongRunningJobImitator.Services.Interfaces
+﻿using LongRunningJobImitator.Services.Models;
+
+namespace LongRunningJobImitator.Services.Interfaces
 {
     public interface ITextConversionWorker
     {
-        Task StartJobAsync(Guid jobId, CancellationToken cancellation);
+        Task StartJobAsync(StartWorkerModel model, CancellationToken cancellation);
     }
 }

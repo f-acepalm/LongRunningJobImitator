@@ -18,7 +18,7 @@ public class TextConverterController : ControllerBase
     [HttpPost("start")]
     public async Task<ActionResult<TextConverterResponse>> StartProcessing([FromBody] TextConverterRequest request, CancellationToken cancellation)
     {
-        var jobId = await _jobManager.StartJobAsync(request.Text, cancellation);
+        var jobId = await _jobManager.StartJobAsync(new(request.Text), cancellation);
 
         return new TextConverterResponse(jobId);
     }
@@ -26,7 +26,7 @@ public class TextConverterController : ControllerBase
     [HttpPost("cancel")]
     public async Task<ActionResult> CancelProcessing([FromBody] CancelConversionRequest request, CancellationToken cancellation)
     {
-        await _jobManager.CancelJobAsync(request.JobId, cancellation);
+        await _jobManager.CancelJobAsync(new(request.JobId), cancellation);
 
         return Ok();
     }

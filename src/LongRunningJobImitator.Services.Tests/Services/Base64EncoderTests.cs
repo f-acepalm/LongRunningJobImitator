@@ -1,10 +1,6 @@
-using AutoFixture.Xunit2;
 using FluentAssertions;
-using LongRunningJobImitator.Services.Interfaces;
 using LongRunningJobImitator.Services.Services;
 using LongRunningJobImitator.Services.Tests.AutoFixtureConfiguration;
-using Moq;
-using System.Text;
 
 namespace LongRunningJobImitator.Services.Tests.Services;
 
@@ -20,7 +16,7 @@ public class Base64EncoderTests
         var expected = "U29tZSBzaW1wbGUgdGV4dC4=";
 
         // Act
-        var actual = sut.Encode(input);
+        var actual = sut.Encode(new(input));
 
         // Assert
         actual.Should().Be(expected);
@@ -35,7 +31,7 @@ public class Base64EncoderTests
         var expected = "IUAjJCVeJiooKSlfK9GE0YvQstCw";
 
         // Act
-        var actual = sut.Encode(input);
+        var actual = sut.Encode(new(input));
 
         // Assert
         actual.Should().Be(expected);
@@ -50,8 +46,8 @@ public class Base64EncoderTests
         var input = "!@#$%^&*())_+פûגא";
 
         // Act
-        var actual = sut.Encode(input);
-        var decoded = sut.Decode(actual);
+        var actual = sut.Encode(new(input));
+        var decoded = sut.Decode(new(actual));
 
         // Assert
         decoded.Should().Be(input);
@@ -70,7 +66,7 @@ public class Base64EncoderTests
         var expected = "U29tZQ0KbXVsdGlsaW5lDQp0ZXh0";
 
         // Act
-        var actual = sut.Encode(input);
+        var actual = sut.Encode(new(input));
 
         // Assert
         actual.Should().Be(expected);
@@ -85,34 +81,9 @@ public class Base64EncoderTests
         var expected = "TG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcgTG9uZyBzdHJpbmcg";
 
         // Act
-        var actual = sut.Encode(input);
+        var actual = sut.Encode(new(input));
 
         // Assert
         actual.Should().Be(expected);
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public void Encode_EmptyText_ArgumentException(Base64Encoder sut)
-    {
-        // Arrange
-        var input = string.Empty;
-
-        // Act
-        var action = () => sut.Encode(input);
-
-        // Assert
-        action.Should().Throw<ArgumentException>();
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public void Encode_NullText_ArgumentException(Base64Encoder sut)
-    {
-        // Act
-        var action = () => sut.Encode(null!);
-
-        // Assert
-        action.Should().Throw<ArgumentException>();
     }
 }

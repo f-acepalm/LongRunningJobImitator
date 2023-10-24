@@ -1,6 +1,8 @@
-﻿using LongRunningJobImitator.Accessors.Interfaces;
+﻿using FluentValidation;
+using LongRunningJobImitator.Accessors.Interfaces;
 using LongRunningJobImitator.Accessors.Models;
 using LongRunningJobImitator.Services.Interfaces;
+using LongRunningJobImitator.Services.Models;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
@@ -13,28 +15,33 @@ public class LongRunningConversionWorker : ITextConversionWorker
     private readonly ILongProcessImitator _longProcessImitator;
     private readonly IJobAccessor _jobAccessor;
     private readonly ITextEncoder _textEncoder;
+    private readonly IValidator<StartWorkerModel> _startWorkerValidator;
 
     public LongRunningConversionWorker(
         ITextConversionResultSender resultSender,
         ILogger<LongRunningConversionWorker> logger,
         ILongProcessImitator longProcessImitator,
         IJobAccessor jobAccessor,
-        ITextEncoder textEncoder)
+        ITextEncoder textEncoder,
+        IValidator<StartWorkerModel> startWorkerValidator)
     {
         _resultSender = resultSender;
         _logger = logger;
         _longProcessImitator = longProcessImitator;
         _jobAccessor = jobAccessor;
         _textEncoder = textEncoder;
+        _startWorkerValidator = startWorkerValidator;
     }
 
-    public async Task StartJobAsync(Guid jobId, CancellationToken cancellation)
+    public async Task StartJobAsync(StartWorkerModel model, CancellationToken cancellation)
     {
-        _logger.LogInformation($"Starting conversion. JobId : {jobId}");
-        
-        ValidateInput(jobId);
+        _logger.LogInformation($"Starting conversion. JobId : {model.JobId}");
+
+        _startWorkerValidator.ValidateAndThrow(model);
+
+        var jobId = model.JobId;
         var jobDoc = await _jobAccessor.GetAsync(jobId, cancellation);
-        var convertedText = _textEncoder.Encode(jobDoc.Text);
+        var convertedText = _textEncoder.Encode(new(jobDoc.Text));
         await UpdateInProgressStatusAsync(jobId, convertedText, cancellation);
         var currentPosition = jobDoc.ProcessingPosition;
 

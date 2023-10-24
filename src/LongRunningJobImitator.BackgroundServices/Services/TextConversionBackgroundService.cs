@@ -6,14 +6,14 @@ namespace LongRunningJobImitator.BackgroundServices.Services;
 public class TextConversionBackgroundService : BackgroundService, ITextConversionBackgroundService
 {
     private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
-    private readonly ITextConversionWorker _textConverter;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<TextConversionBackgroundService> _logger;
 
     public TextConversionBackgroundService(
-        ITextConversionWorker textConverter,
+        IServiceProvider serviceProvider,
         ILogger<TextConversionBackgroundService> logger)
     {
-        _textConverter = textConverter;
+        _serviceProvider = serviceProvider;
         _logger = logger;
     }
 
@@ -59,7 +59,11 @@ public class TextConversionBackgroundService : BackgroundService, ITextConversio
     {
         try
         {
-            await _textConverter.StartJobAsync(jobId,  cancellation);
+            using var scope = _serviceProvider.CreateScope();
+            var worker = scope.ServiceProvider.GetRequiredService<ITextConversionWorker>();
+            
+            await worker.StartJobAsync(new(jobId), cancellation);
+
             if (_tokens.TryRemove(jobId, out _))
             {
                 _logger.LogInformation($"Job is done: {jobId}");

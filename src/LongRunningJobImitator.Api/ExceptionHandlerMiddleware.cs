@@ -1,5 +1,5 @@
-﻿using LongRunningJobImitator.Api.Models;
-using LongRunningJobImitator.Services.Exceptions;
+﻿using FluentValidation;
+using LongRunningJobImitator.Api.Models;
 using System.Net;
 using System.Text.Json;
 
@@ -34,7 +34,7 @@ public class ExceptionHandlerMiddleware
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-        var response = new ValidationErrorResponse(ex.Message);
+        var response = new ValidationErrorResponse(string.Join(';', ex.Errors.Select(x => x.ErrorMessage)));
 
         return context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }

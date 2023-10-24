@@ -1,8 +1,10 @@
-﻿namespace LongRunningJobImitator.Services.Interfaces;
+﻿using LongRunningJobImitator.Services.Models;
+
+namespace LongRunningJobImitator.Services.Interfaces;
 
 public interface ITextEncoder
 {
-    string Decode(string value);
+    string Decode(DecodeModel model);
 
-    string Encode(string value);
+    string Encode(EncodeModel model);
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Extensions.Http;
 using Polly;
+using FluentValidation;
 
 namespace LongRunningJobImitator.Services;
 public static class ContainerExtensions
@@ -15,6 +16,7 @@ public static class ContainerExtensions
         var signalRSettings = configuration.GetRequiredSection(Constants.SignalRClientName).Get<SignalRHubSettings>();
 
         services
+            .AddCommon()
             .AddLongRunningJobImitatorAccessors(configuration)
             .AddTransient<ITextConversionWorker, LongRunningConversionWorker>()
             .AddTransient<ILongProcessImitator, LongProcessImitator>()
@@ -30,12 +32,19 @@ public static class ContainerExtensions
     {
         var jobApiSettings = configuration.GetRequiredSection(Constants.JobClientName).Get<JobApiSettings>();
 
-        services.AddTransient<IJobManager, JobManager>()
+        services
+            .AddCommon()
+            .AddTransient<IJobManager, JobManager>()
             .AddLongRunningJobImitatorAccessors(configuration)
             .AddTransient<IRetriableHttpClient, RetriableHttpClient>()
             .AddHttpClientWithRetry(Constants.JobClientName, jobApiSettings.Url);
 
         return services;
+    }
+
+    private static IServiceCollection AddCommon(this IServiceCollection services)
+    {
+        return services.AddValidatorsFromAssemblyContaining<AssemblyInfo>();
     }
 
     private static IServiceCollection AddHttpClientWithRetry(this IServiceCollection services, string clientName, string baseUrl)
